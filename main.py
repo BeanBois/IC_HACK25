@@ -12,6 +12,19 @@ with open("event.yml", "r") as file:
 
 model = ChatAnthropic(model="claude-3-5-sonnet-20240620")
 
+def analyse_data(aimessages, messages, act_context):
+    model2 = ChatAnthropic(model="claude-3-5-sonnet-20240620")
+    for i in range(len(aimessages)):
+        context = [
+            SystemMessage("you can answer only with a response  float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree"),
+            HumanMessage("""Take this context, qustion, answer, and rate the answer with 5 or 0 for the following criteria, if you dont know or dont understand, asnwer must only contain numbers, return 0:'
+                         1.player Is talkative
+                         2.Tends to find fault with others
+                         3.Does a thorough job
+                         4. Is depressed, blue
+                         5.Is original, comes up with new ideas"""+ "Question:"  + aimessages[i] + "Asnwer" + messages[i] + "Context" + act_context)
+    ]
+    print(model2.invoke(context).content)
 
 # Get the AI's response
 #map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
@@ -22,7 +35,7 @@ print("Type 'exit' to end the game.\n\n")
 
 i=0
 #Main Loop
-while i < 3:
+while i < 1:
     messages = []
     aimessages = []
     i = i + 1
@@ -54,6 +67,4 @@ while i < 3:
         if user_input.lower() == "exit":
             print("Goodbye! The game has ended.")
             break
-        print(aimessages)
-        print(messages)
-        print(prompt_data['prompt'][act_key]['act_context'])
+    analyse_data(aimessages,messages,prompt_data['prompt'][act_key]['act_context'])
