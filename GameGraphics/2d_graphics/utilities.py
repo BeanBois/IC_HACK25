@@ -18,9 +18,9 @@ class GameMap:
         self.path_points = self._find_map(PATH_CHAR)
         self.objects = dict()
     
+    # needs changing
     def player_facing_obj(self, player):
         player_pos = self.get_player()
-        print(player_pos)
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
             fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
@@ -35,7 +35,8 @@ class GameMap:
                 print(position)
                 return True
         return False
-        
+    
+    # needs changing
     def get_object_near_player(self,player):
         player_pos = self.get_player()
         fn = None
