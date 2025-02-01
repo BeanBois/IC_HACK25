@@ -15,45 +15,46 @@ with open("event.yml", "r") as file:
 model = ChatAnthropic(model="claude-3-5-sonnet-20240620")
 
 
+
+
 # Define the initial system message
-messages = []
-user_inputs = []  # Store all user inputs
-ai_responses = []  # Store all AI responses
+messages = [
+    SystemMessage(str(prompt_data))
+]
 
 # Start the interactive loop
-print("Welcome to the game! You are talking to an android.")
+print("Welcome to the game! You are talking to as android")
 print("Type 'exit' to end the game.\n")
 
-# AI starts the conversation
-initial_prompt = "Generate an (nxn) maze with walls ('*') and paths ('.')."
-initial_response = model.invoke([HumanMessage(content=initial_prompt)])
+# Get the AI's response
+map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
+print(map)
 
-print(f"Android: {initial_response.content}\n")
-ai_responses.append(initial_response.content)  # Save AI's first response
-messages.append(initial_response)  # Store in conversation history
-
-# Main Loop
+#Main Loop
 while True:
-    # Get user input
-    user_input = input("You: ")
-    
     # Exit the game if the user types 'exit'
     if user_input.lower() == "exit":
         print("Goodbye! The game has ended.")
         break
 
-    user_inputs.append(user_input)  # Save user input
-    messages.append(HumanMessage(content=user_input))  # Store in conversation
 
-    # Get AI's response
+    # Get user input
+    user_input = input("You: ")
+
+    # Add the user's message to the conversation
+    #this message is processed to the pther model
+    messages.append(HumanMessage(content=user_input))
+
+
+    # Get the AI's response
     response = model.invoke(messages)
-    
+
+    # Print the AI's response
     print(f"Android: {response.content}\n")
-    
-    ai_responses.append(response.content)  # Save AI's response
-    messages.append(response)  # Store response in conversation history
+    print(response)
 
+    # Add the AI's response to the conversation
+    messages.append(response)
 
-# At the end, you have:
-# - `user_inputs` storing all user messages
-# - `ai_responses` storing all AI responses
+    send_data(response, messages, prompt_data)
+
