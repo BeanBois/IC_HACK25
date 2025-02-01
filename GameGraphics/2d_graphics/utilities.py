@@ -73,7 +73,7 @@ class GameMap:
         # Loop through the 2D array
         for x in range(len(self.map_matrix)):
             for y in range(len(self.map_matrix[x])):
-                if self.map_matrix[x][y] is element:
+                if self.map_matrix[x][y] == element:
                     path_points.add((x, y)) 
         return path_points
     
@@ -99,7 +99,6 @@ class GameScreen:
 
     def __init__(self, map_string,pg):
         self.map_controller = pg
-        # self.map_matrix = self._str_to_mtx(map_string)
         self.game_map = GameMap(map_string)
         self._make_screen()
         
@@ -113,7 +112,7 @@ class GameScreen:
         for x in range(len(self.game_map.map_matrix)):
             for y in range(len(self.game_map.map_matrix[x])):
                 self._make_element(self.game_map.map_matrix[x][y], y, x)
-        
+        self.map_controller.display.flip()
         # Update the display after drawing all elements
                 
     def _init_screen(self):
@@ -125,11 +124,11 @@ class GameScreen:
     def _make_element(self, element, y, x):
         if element is WALL_CHAR:
             self._make_wall(y, x)
-        elif element is PATH_CHAR:
+        if element is PATH_CHAR:
             self._make_path(y, x)
-        elif element is PLAYER_CHAR:
+        if element is PLAYER_CHAR:
             self._make_player(y, x)
-        elif element is OBJECT_CHAR:
+        if element is OBJECT_CHAR:
             self._make_object(y, x)
         
     def _make_object(self,y,x):
@@ -280,12 +279,13 @@ if __name__ == "__main__":
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
     obj1 = GameObject("Test Object", screen.game_map)
-    # obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    obj2 = GameObject("Test Object", screen.game_map,interactive=True)
     
     running = True
     clock = pg.time.Clock()
     
     while running:
+        pg.event.pump()
         # Check for events (like closing the window)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -295,14 +295,15 @@ if __name__ == "__main__":
                     player.set_interacting()
                     obj = screen.game_map.get_object_near_player(player)
                     obj.interact(player)
+                    print('s')
                 else:
                     player.move(event.key)
             if player.interacting:
                 pass 
 
         screen.fill_screen()
+        screen.map_controller.display.flip()
         # Update the display
-        pg.display.flip()
         clock.tick(60)  
 
     # Quit pg
