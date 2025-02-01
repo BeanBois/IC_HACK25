@@ -90,7 +90,28 @@ class GameMap:
                 self.path_points.remove((x,y))
 
     def draw_map(self,screen:pg.Surface):
-        pass
+        MINI_TILE_SIZE = 5
+        offset_x = 0
+        offset_y = 0
+        for row_index, row in enumerate(self.map_matrix):
+            for col_index, cell in enumerate(row):
+                if cell == WALL_CHAR:
+                    colour = WALL_COLOUR
+                elif cell == PATH_CHAR:
+                    colour = PATH_COLOUR
+                elif cell == PLAYER_CHAR:
+                    colour = PLAYER_COLOUR
+                elif cell == OBJECT_CHAR:
+                    colour = PASSIVE_OBJECT_COLOUR
+                else:
+                    colour = (255,0,0)
+                rect = pg.Rect(
+                    offset_x + (col_index * MINI_TILE_SIZE),
+                    offset_y + (row_index * MINI_TILE_SIZE),
+                    MINI_TILE_SIZE,
+                    MINI_TILE_SIZE
+                )
+                pg.draw.rect(screen, colour, rect)
         # by default map is in the top right corner
         
 # controls the graphic of the game screen
@@ -299,8 +320,9 @@ if __name__ == "__main__":
                     player.move(event.key)
             if player.interacting:
                 pass 
-
+        
         screen.fill_screen()
+        screen.game_map.draw_map(screen.screen)
         # Update the display
         pg.display.flip()
         clock.tick(60)  
