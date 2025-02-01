@@ -1,0 +1,1 @@
+# contains personality csv and results from ai 
