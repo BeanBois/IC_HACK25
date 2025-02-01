@@ -131,7 +131,7 @@ class GameScreen:
         if element is OBJECT_CHAR:
             self._make_object(y, x)
         
-    def _make_object(self,y,x):
+    def _make_object(self,x,y):
         obj = self.game_map.objects[(x,y)]
         color = INTERACTIVE_OBJECT_COLOUR if obj.interactive else PASSIVE_OBJECT_COLOUR
         self.map_controller.draw.rect(self.screen, color, obj.figure)
