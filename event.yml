@@ -1,30 +1,75 @@
 # Prompt for generating game rules using a machine learning model
 prompt:
-  instruction: |
-    As part of a game, testing the player on asiutation where the fire alarm is happening.
-  
-  context: |
-    The game is set in a world where there is a fire alarm happening on a building. The player is trying to survive and escape the building.
+  global: 
+    instruction: |
+      As part of a game, testing the player on asiutation where the fire alarm is happening. You should remmain on tasks
+    global_rules: |
+      idk anything
+    output_format: |
+      The rules should be organized into the following sections:
+        1. Objective: Task size objective on what to do
+        2. Gameplay: the player need to say what he would do
+        3. Winning Conditions: The games end when the player succesfully exits the building or the tasks is succesfully completed. 
+        4. Special Rules: if the player is in the elevator, the player cannot take the elevator and logic based rules like that
 
-  context_rules: |
-    The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
-    PLayer cannot take the elevator in case of fire
-
-  output_format: |
-    The rules should be organized into the following sections:
-    1. Objective: Task size objective on what to do
-    2. Gameplay: the player need to say what he would do
-    3. Winning Conditions: The games end when the player succesfully exits the building or the tasks is succesfully completed. 
-    4. Special Rules: if the player is in the elevator, the player cannot take the elevator and logic based rules like that
-  
-  constraints: |
-    The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
-
-  final_instruction: |
-    Create the game and ask user the first question
-  
-  generate_env: |
-    # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+  act1:
+    act_1_instruction: |
+      As part of a game, testing the player on asiutation where the fire alarm is happening.
     
+    act_context: |
+      The game is set in a world where there is a fire alarm happening on a building. The player is trying to survive and escape the building.
+
+    act_1_context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+      PLayer cannot take the elevator in case of fire
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
+  act2:
+    instruction: |
+      As part of a game, testing the player on asiutation where the fire alarm is happening.
+    
+    act_context: |
+      The game is set in a world where there is a fire alarm happening on a building. The player is trying to survive and escape the building.
+
+    context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+      PLayer cannot take the elevator in case of fire
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
+  act3:
+    instruction: |
+      As part of a game, testing the player on asiutation where the fire alarm is happening.
+    
+    act_context: |
+      The game is set in a world where there is a fire alarm happening on a building. The player is trying to survive and escape the building.
+
+    context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+      PLayer cannot take the elevator in case of fire
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
 
  
