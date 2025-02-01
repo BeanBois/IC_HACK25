@@ -4,8 +4,9 @@ import random
 from make_maze import make_maze
 from config import *
 import pygame as pg # type: ignore
+import math
 
-
+round_down = lambda x : math.floor(x)
 class Game:
     pass
 
@@ -19,17 +20,19 @@ class GameMap:
     
     def player_facing_obj(self, player):
         player_pos = self.get_player()
+        print(player_pos)
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[1] + 1 == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH:
-            fn = lambda point : point[1] - 1 == player_pos[1]
+            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[0] + 1 == player_pos[0]
+            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
         elif player.orientation == PLAYER_ORIENTATION.WEST:
-            fn = lambda point : point[0] - 1 == player_pos[0]
+            fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
         for position in self.objects.keys():
             if fn(position):
+                print(position)
                 return True
         return False
         
@@ -37,13 +40,13 @@ class GameMap:
         player_pos = self.get_player()
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[1] + 1 == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH:
-            fn = lambda point : point[1] - 1 == player_pos[1]
+            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[0] + 1 == player_pos[0]
+            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
         elif player.orientation == PLAYER_ORIENTATION.WEST:
-            fn = lambda point : point[0] - 1 == player_pos[0]
+            fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
         for position in self.objects.keys():
             if fn(position):
                 return self.objects[position]
@@ -102,7 +105,8 @@ class GameMap:
                 elif cell == PLAYER_CHAR:
                     colour = PLAYER_COLOUR
                 elif cell == OBJECT_CHAR:
-                    colour = PASSIVE_OBJECT_COLOUR
+                    obj = self.objects[(row_index, col_index)]
+                    colour = INTERACTIVE_OBJECT_COLOUR if obj.interactive else PASSIVE_OBJECT_COLOUR 
                 else:
                     colour = (255,0,0)
                 rect = pg.Rect(
@@ -133,6 +137,7 @@ class GameScreen:
         for x in range(len(self.game_map.map_matrix)):
             for y in range(len(self.game_map.map_matrix[x])):
                 self._make_element(self.game_map.map_matrix[x][y], y, x)
+        self.game_map.draw_map(self.screen)
         self.map_controller.display.flip()
         # Update the display after drawing all elements
                 
@@ -153,7 +158,7 @@ class GameScreen:
             self._make_object(y, x)
         
     def _make_object(self,x,y):
-        obj = self.game_map.objects[(x,y)]
+        obj = self.game_map.objects[(y,x)]
         color = INTERACTIVE_OBJECT_COLOUR if obj.interactive else PASSIVE_OBJECT_COLOUR
         self.map_controller.draw.rect(self.screen, color, obj.figure)
         
@@ -216,6 +221,9 @@ class Player:
         self.moving = True
         self.interacting = False
     
+    def get_map_coords(self):
+        return round_down(self.x), round_down(self.y)
+    
     def set_moving(self):
         self.moving = True
         self.interacting = False
@@ -275,7 +283,7 @@ class GameObject:
         self.x = x        # X-coordinate of the object
         self.y = y        # Y-coordinate of the object
         self.interactive = interactive  # Whether the object is interactive
-        self.figure = pg.Rect(x * MAP_RATIO, y * MAP_RATIO, MAP_RATIO, MAP_RATIO)
+        self.figure = pg.Rect(y * MAP_RATIO, x * MAP_RATIO, MAP_RATIO, MAP_RATIO)
         self.game_map.add_object(self, self.x, self.y)
         
     def interact(self, player):
@@ -312,18 +320,17 @@ if __name__ == "__main__":
             if event.type == pg.QUIT:
                 running = False
             if player.moving and event.type == pg.KEYDOWN:
+                print(screen.game_map.player_facing_obj(player))
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
                     obj = screen.game_map.get_object_near_player(player)
                     obj.interact(player)
-                    print('s')
                 else:
                     player.move(event.key)
             if player.interacting:
                 pass 
         
         screen.fill_screen()
-        screen.game_map.draw_map(screen.screen)
         screen.map_controller.display.flip()
         # Update the display
         clock.tick(60)  

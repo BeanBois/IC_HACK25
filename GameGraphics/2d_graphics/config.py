@@ -1,5 +1,7 @@
-# map configs
-MAP_RATIO = 30
+# ratios
+MAP_RATIO = 60
+PLAYER_RATIO = MAP_RATIO//2
+OBJECT_RATIO = MAP_RATIO//2
 
 # Colour for objects
 WALL_COLOUR = (0, 0, 0) # black
