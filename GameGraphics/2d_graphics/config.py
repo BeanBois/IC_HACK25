@@ -1,0 +1,6 @@
+# map configs
+MAP_RATIO = 30
+WALL_CHAR = '*'
+PATH_CHAR = '.'
+WALL_COLOUR = (125, 125, 125)
+PATH_COLOUR = (0, 0, 0)
