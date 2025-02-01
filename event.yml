@@ -2,9 +2,17 @@
 prompt:
   global: 
     instruction: |
-      As part of a game, testing the player on asiutation where the fire alarm is happening. You should remmain on tasks
+      As part of a game, testing the player on a siutation where a fire alarm is happening. You need to ensure that the following types of events happen at least once in this order:
+        1. Start the game with a mundane office task (such as sending an apology email as to why you can't make a work social) and trigger the fire alarm after completion.
+        2. Be accompanied by a friend at the start of the evacuation sequence.
+        3. The player is alerted that they hear someone calling for help.
+        4. The player is separated rrom their friend.
+        5. The player is forced to adjust their strategy (some event occurs that makes their current startegy unworkable).
+        6. When the player escapes the emergency services has not arrived.
+        7. End the game.
+      You should remmain on tasks
     global_rules: |
-      idk anything
+      YOU MUST NEVER PREVENT OR CRITISE THE PLAYER FROM COMMITTING AN ACTION UNLESS IT WOULD RESULT IN THE DEATH OF THE PLAYER!
     output_format: |
       The rules should be organized into the following sections:
         1. Objective: Task size objective on what to do
@@ -14,7 +22,7 @@ prompt:
 
   act1:
     act_1_instruction: |
-      As part of a game, testing the player on asiutation where the fire alarm is happening.
+      As part of a game, testing the player on a siutation where the fire alarm is happening.
     
     act_context: |
       The game is set in a world where there is a fire alarm happening on a building. The player is trying to survive and escape the building.
