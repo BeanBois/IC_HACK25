@@ -1,0 +1,81 @@
+# Prompt for generating game rules using a machine learning model
+prompt:
+  global: 
+    instruction: |
+      As part of a game, testing the player on a siutation where a wildfire is happening. You need to ensure that the following types of events happen at least once in this order:
+        1. Start the game with a mundane task in the forest (such as calling a friend and explaining as to why you can't make a work social) and trigger the wildfire after completion.
+        2. Be accompanied by a friend at the start of the wildfire standard operational procedure (SOP).
+        3. The player is alerted that they hear someone calling for help.
+        4. The player is separated from their friend.
+        5. The player is forced to adjust their strategy (some event occurs that makes their current startegy unworkable).
+        6. When the player escapes from the fire the emergency services has not arrived.
+        7. End the game starting with congratuations.
+        8. Try to encourage the game to finish in 3 prompts
+      You should remain on tasks
+    global_rules: |
+      YOU MUST NEVER PREVENT OR CRITISE THE PLAYER FROM COMMITTING AN ACTION UNLESS IT WOULD RESULT IN THE DEATH OF THE PLAYER!
+    output_format: |
+      The rules should be organized into the following sections:
+        1. Objective: Task size objective on what to do
+        2. Gameplay: the player need to say what he would do
+        3. Winning Conditions: The games end when the player succesfully exits the building or the tasks is succesfully completed. 
+        4. Special Rules: if the player is in the elevator, the player cannot take the elevator and logic based rules like that
+
+  act1:
+    act_1_instruction: |
+      As part of a game, testing the player on a siutation where the wild fire is happening.
+    
+    act_context: |
+      The game is set in a world where there is a wild fire happening in a forest. The player is trying to survive and escape the fire.
+
+    act_1_context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
+  act2:
+    instruction: |
+      As part of a game, testing the player on a siutation where the wildfire is happening.
+    
+    act_context: |
+      The game is set in a world where there is a wildfire happening in a forest. The player is trying to survive and escape the fire.
+
+    context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
+  act3:
+    instruction: |
+      As part of a game, testing the player on asiutation where the wildfire is happening.
+    
+    act_context: |
+      The game is set in a world where there is a wildfire happening in a forest. The player is trying to survive and escape the fire.
+
+    context_rules: |
+      The rules should be no longer than 500 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+    
+    constraints: |
+      The rules should be no longer than 200 words and should avoid complex terminology. Focus on making the rules accessible to younger players.
+
+    final_instruction: |
+      Create the game and ask user the first question
+    
+    generate_env: |
+      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
+ 
