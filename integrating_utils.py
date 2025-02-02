@@ -155,8 +155,12 @@ class Fire(pg.sprite.Sprite):
         self.frame_width = self.sprite_sheet.get_width() // 4
         self.frame_height = self.sprite_sheet.get_height()// 2
         self.animation_speed = animation_speed  # Milliseconds per frame
-        self.position = position
+        temp1 = position[0] * MAP_RATIO
+        temp2 = position[1] * MAP_RATIO
+        
+        self.position = (temp1, temp2)
 
+        self.scale_size = (MAP_RATIO // 2, MAP_RATIO // 2)
         # Extract frames from the sprite sheet
         self.frames = self.load_frames()
 
@@ -167,6 +171,7 @@ class Fire(pg.sprite.Sprite):
         # Set the initial image and rect for the sprite
         self.image = self.frames[self.current_frame]
         self.rect = self.image.get_rect(topleft=position)
+        print(position)
 
     def load_frames(self):
         """Extract individual frames from the sprite sheet."""
@@ -176,10 +181,15 @@ class Fire(pg.sprite.Sprite):
         
         for row in range(rows):
             for col in range(columns):
-                x = col * self.frame_width
+                x = col * self.frame_width 
                 y = row * self.frame_height
                 frame = self.sprite_sheet.subsurface(pg.Rect(x, y, self.frame_width, self.frame_height))
-                frames.append(frame)
+                scaled_frame = pg.transform.scale(frame, self.scale_size)
+                frame_rect = scaled_frame.get_rect()
+                frame_rect.x = self.position[0] * MAP_RATIO
+                frame_rect.y = self.position[1] * MAP_RATIO
+                
+                frames.append(scaled_frame)
         return frames
 
     def update(self):
@@ -189,7 +199,7 @@ class Fire(pg.sprite.Sprite):
             self.last_update = now
             self.current_frame = (self.current_frame + 1) % len(self.frames)
             self.image = self.frames[self.current_frame]   
-
+        self.rect.topleft = self.position
 class Door(GameObject):
     
     def __init__(self, name, game_map: GameMap, interactive=True, walkable = True):

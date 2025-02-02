@@ -16,6 +16,7 @@ WALL_CHAR = '*'
 PATH_CHAR = '.'
 OBJECT_CHAR = 'o'
 PLAYER_CHAR = 'x'
+FIRE_CHAR = 'f'
 
 from enum import Enum
 class PLAYER_ORIENTATION(Enum):
