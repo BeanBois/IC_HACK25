@@ -4,8 +4,9 @@ from integrating_utils import *
 from GameEngine.test import InteractiveChatGame
 from GameEngine.personalityres import *
 import os 
-import serial
-from serial.tools import list_ports
+# import serial
+# from serial.tools import list_ports
+from serialcomm import connect_and_send
 
 if __name__ == "__main__":
     sound_file = os.getcwd()+"/GameGraphics/twod_graphics/Assets/sound/fetty_wap.mp3"
@@ -98,15 +99,22 @@ if __name__ == "__main__":
             # Update the display
             screen.map_controller.display.flip()
             player_sheet.calculate_traits()
-            ports = list_ports.comports()
-            for port in ports:
-                if "USB Serial Device" in port.description:
-                    ser = serial.Serial(port.device, 115200)
-            returnstr = "player_name"  # implement name when I have it
+
+            returnstr = "player_name"
             for key, value in player_sheet.personality_result_dict.items():
                 returnstr += f"{key[0]:{round(value)}}"
-            ser.write(returnstr.encode("ascii"))
-            ser.close()
+
+            connect_and_send(returnstr)
+            # ports = list_ports.comports()
+            # for port in ports:
+            #     if "USB Serial Device" in port.description:
+            #         ser = serial.Serial(port.device, 115200)
+            # returnstr = "player_name"  # implement name when I have it
+            # for key, value in player_sheet.personality_result_dict.items():
+            #     returnstr += f"{key[0]:{round(value)}}"
+            # ser.write(returnstr.encode("ascii"))
+            # ser.close()
+
             profile = PersonalityReport(player_sheet.personality_result_dict)
             # Wait for a few seconds to show the popup
             pg.time.wait(3000)  
