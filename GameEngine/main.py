@@ -29,9 +29,10 @@ def analyse_data(history, act_context):
     matrix= []
     model2 = ChatAnthropic(model="claude-3-5-sonnet-20240620")
     for i in range(0, len(history), 2):
+        print('here')
         context = [
             SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree."),
-            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers .
+            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers, if you dont know put 0dj .
                         1. answer shows player is Is talkative',
                         2 answer shows player Tends to find fault with others',
                         3. answer shows player Does a thorough job', 
@@ -78,13 +79,13 @@ def analyse_data(history, act_context):
                         44. answer shows player Likes to cooperate with others', 
                         45. answer shows player Is easily distracted',
                         46. answer shows player Is sophisticated in art, music, or literature' """
-                        + " Question: " + str(history[i])
-                        + " Answer: " + str(history[i + 1])
-                        + " Context: " + str(act_context))
-        ]
+                        + " Question: " + str(history[i].content)
+                        + " Answer: " + str(history[i + 1].content)
+                        + " Context: " + str(act_context))]
+        print('there')
         response = model2.invoke(context).content
-        
-    print(response)
+        matrix.append(response)
+    print(matrix)
 
 # Get the AI's response
 #map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
