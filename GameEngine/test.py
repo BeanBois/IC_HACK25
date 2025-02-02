@@ -22,7 +22,7 @@ class InteractiveChatGame:
 
     def init_ai(self):
         # Add system message for context
-        context = SystemMessage(content=str({**self.prompt_data['prompt']['global'], **self.prompt_data['prompt'][str(self.act_key)]}))
+        context = SystemMessage(content=str({**self.prompt_data['prompt']['global'], **self.prompt_data['prompt'][self.act_key]}))
         self.history.append(context)  # Add system message to history
         
         # Add initial human message
