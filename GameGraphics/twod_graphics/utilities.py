@@ -129,7 +129,9 @@ class GameScreen:
         self.game_map = GameMap(map_string)
         self._make_screen()
         self.player = None
-    
+        file_path = os.getcwd()+ '/GameGraphics/twod_graphics/Assets/map/'
+        self.path_sprite_file = file_path + 'path.png'
+        self.wall_sprite_file = file_path + 'wall.png'
     def set_player(self,player):
         self.player = player
         
@@ -171,11 +173,17 @@ class GameScreen:
     # function creates a map from a map in matrix form
     def _make_wall(self, x, y):
         wall = self.map_controller.Rect(x * MAP_RATIO, y * MAP_RATIO, MAP_RATIO, MAP_RATIO)
-        self.map_controller.draw.rect(self.screen, WALL_COLOUR, wall)
+        sprite = self.map_controller.image.load(self.wall_sprite_file)
+        scaled_sprite = self.map_controller.transform.scale(sprite, (wall.width, wall.height))
+        # Draw the scaled sprite onto the screen at the player rectangle's position
+        self.screen.blit(scaled_sprite, wall.topleft)
         
     def _make_path(self, x, y):
         path = self.map_controller.Rect(x * MAP_RATIO, y * MAP_RATIO, MAP_RATIO, MAP_RATIO)
-        self.map_controller.draw.rect(self.screen, PATH_COLOUR, path)
+        sprite = self.map_controller.image.load(self.path_sprite_file)
+        scaled_sprite = self.map_controller.transform.scale(sprite, (path.width, path.height))
+        # Draw the scaled sprite onto the screen at the player rectangle's position
+        self.screen.blit(scaled_sprite, path.topleft)
 
     def _make_player(self,x,y):
         player = self.map_controller.Rect(x * MAP_RATIO, y * MAP_RATIO, MAP_RATIO, MAP_RATIO)
