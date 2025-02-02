@@ -135,15 +135,15 @@ class PersonalityReport:
         else:
             os.system(f"start {pdf_path}")
 
-# Example Usage
-p1 = PlayerSheet('csv/BFI_44.csv')
+#     # Example Usage
+#     p1 = PlayerSheet('csv/BFI_44.csv')
 
-# Generating random scores for testing
-model_val_array = [random.randint(1, 5) for _ in range(44)]
-p1.update_player_sheet(model_val_array)
-p1.calculate_traits()
+#     # Generating random scores for testing
+#     model_val_array = [random.randint(1, 5) for _ in range(44)]
+#     p1.update_player_sheet(model_val_array)
+#     p1.calculate_traits()
 
-# Create a PersonalityReport instance and generate results
-report = PersonalityReport(p1.personality_result_dict)
-report.plot_personality_type()
-report.generate_report()
+#     # Create a PersonalityReport instance and generate results
+#     report = PersonalityReport(p1.personality_result_dict)
+#     report.plot_personality_type()
+#     report.generate_report()

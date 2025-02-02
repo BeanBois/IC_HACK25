@@ -4,7 +4,8 @@ import re
 import yaml
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-
+import serial
+from serial.tools import list_ports
 class InteractiveChatGame:
     def __init__(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
         # Ensure API key is set
@@ -81,7 +82,7 @@ class InteractiveChatGame:
     def get_history(self):
         return self.history
     
-    def analyse_data(self, player):
+    def analyse_data(self, player, player_name):
         if len(self.history) % 2 != 0:
             self.history.pop()
             matrix= []
@@ -149,5 +150,14 @@ class InteractiveChatGame:
             if len(scores) != 44:
                 continue
             player.update_player_sheet(scores)
-            player.calculate_traits()
-            player.plot_personality_type()
+        player.calculate_traits()
+        ports = list_ports.comports()
+        for port in ports:
+            if "USB Serial Device" in port.description:
+                ser = serial.Serial(port.device, 115200)
+        returnstr = f"{player_name}"
+        
+        ser.write(returnstr.encode("ascii"))
+        ser.close()
+        player.plot_personality_type()
+        
