@@ -1,8 +1,8 @@
 #!/usr/bin/env python3.10
 
 import random
-from make_maze import make_maze
-from config import *
+from .make_maze import make_maze
+from .config import *
 import pygame as pg # type: ignore
 import math
 import os
@@ -24,13 +24,13 @@ class GameMap:
         player_pos = self.get_player()
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
             fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
+        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
-        elif player.orientation == PLAYER_ORIENTATION.WEST:
             fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
+        elif player.orientation == PLAYER_ORIENTATION.WEST:
+            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
         for position in self.objects.keys():
             if fn(position):
                 print(position)
@@ -42,13 +42,13 @@ class GameMap:
         player_pos = self.get_player()
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
             fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
+        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
-        elif player.orientation == PLAYER_ORIENTATION.WEST:
             fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
+        elif player.orientation == PLAYER_ORIENTATION.WEST:
+            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
         for position in self.objects.keys():
             if fn(position):
                 return self.objects[position]
@@ -280,31 +280,31 @@ class Player:
         if event_key == pg.K_UP:
             if self.orientation == PLAYER_ORIENTATION.NORTH:
                 self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+                dx -=1
             else:
                 self.sprite_movement_count = 0
-            self.orientation = PLAYER_ORIENTATION.NORTH
-            dx -=1
+                self.orientation = PLAYER_ORIENTATION.NORTH
         elif event_key == pg.K_DOWN:
             if self.orientation == PLAYER_ORIENTATION.SOUTH:
                 self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+                dx +=1
             else:
                 self.sprite_movement_count = 0
-            self.orientation = PLAYER_ORIENTATION.SOUTH
-            dx +=1
+                self.orientation = PLAYER_ORIENTATION.SOUTH
         elif event_key == pg.K_LEFT:
             if self.orientation == PLAYER_ORIENTATION.WEST:
                 self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+                dy -= 1
             else:
                 self.sprite_movement_count = 0
-            self.orientation = PLAYER_ORIENTATION.WEST
-            dy -=1
+                self.orientation = PLAYER_ORIENTATION.WEST
         elif event_key == pg.K_RIGHT:
             if self.orientation == PLAYER_ORIENTATION.EAST:
                 self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+                dy += 1
             else:
                 self.sprite_movement_count = 0
-            self.orientation = PLAYER_ORIENTATION.EAST
-            dy +=1
+                self.orientation = PLAYER_ORIENTATION.EAST
         # Check if the new position is valid
         if self.game_map.is_movable_position(self.x + dx, self.y + dy):
             prev_loc = (self.x, self.y)

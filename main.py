@@ -6,6 +6,7 @@ if __name__ == "__main__":
     player =  Player(screen.game_map)
     obj1 = GameObject("Test Object", screen.game_map)
     obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    screen.set_player(player)
     
     running = True
     clock = pg.time.Clock()
