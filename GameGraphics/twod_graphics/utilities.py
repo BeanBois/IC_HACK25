@@ -87,7 +87,12 @@ class GameMap:
     def add_object(self,obj,x,y):
         self.objects[(x,y)] = obj
         self.update_map(OBJECT_CHAR, x, y)
-     
+        
+    def add_fire(self,x,y):
+        # self.objects[(x,y)] = obj
+        # self.update_map(FIRE_CHAR, x, y)
+        pass
+        
     def update_map(self,element,x,y):
         self.map_matrix[x][y] = element
         if element is PATH_CHAR:
@@ -151,7 +156,7 @@ class GameScreen:
                 self._make_element(self.game_map.map_matrix[x][y], y, x)
         self.game_map.draw_map(self.screen)
         self.tutorial.draw()
-        self.map_controller.display.flip()
+        # self.map_controller.display.flip()
         # Update the display after drawing all elements
                 
     def _init_screen(self):

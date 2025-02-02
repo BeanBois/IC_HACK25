@@ -17,6 +17,17 @@ if __name__ == "__main__":
     # obj2 = GameObject("Test Object", screen.game_map,interactive=True)
     chat_engine = InteractiveChatGame()
     admin = Admin("admin",screen.game_map, chat_engine)
+    # if 'fire' in admin.dialouge:
+    #     fires = []
+    #     for _ in range(10):
+    #         x, y = random.choice(list(screen.game_map.path_points))
+    #         position = (x,y)
+    #         fire = Fire(position)
+    #         screen.game_map.add_fire(x,y)
+    #         fires.append(fire)
+    #     fire_group = pg.sprite.Group(*fires)
+            
+        
     screen.set_player(player)
     running = True
     clock = pg.time.Clock()
@@ -110,8 +121,10 @@ if __name__ == "__main__":
                 pass 
         
             
-        
+
         screen.fill_screen()
+        fire_group.update() 
+        fire_group.draw(screen.screen)
         screen.map_controller.display.flip()
         # Update the display
         clock.tick(60)  
