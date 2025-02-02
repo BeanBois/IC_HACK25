@@ -8,7 +8,7 @@ class InteractiveChatGame:
     def __init__(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
         # Ensure API key is set
         if not os.environ.get("ANTHROPIC_API_KEY"):
-            os.environ["ANTHROPIC_API_KEY"] = getpass.getpass("Enter API key for Anthropic: ")
+            os.environ["ANTHROPIC_API_KEY"] = "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"
         
         # Initialize messages outside the loop to preserve conversation history
         self.model = ChatAnthropic(model=model_version)
@@ -39,7 +39,7 @@ class InteractiveChatGame:
         self.history.append(HumanMessage(content=input_text))
         response = self.model.invoke(self.history)
         self.history.append(AIMessage(content=response.content))
-        return response
+        return response.content
     
     def get_history(self):
         return self.history

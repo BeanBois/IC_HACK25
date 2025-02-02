@@ -24,27 +24,9 @@ class GameMap:
         player_pos = self.get_player()
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
             fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
-        elif player.orientation == PLAYER_ORIENTATION.WEST:
-            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
-        for position in self.objects.keys():
-            if fn(position):
-                print(position)
-                return True
-        return False
-    
-    # needs changing
-    def get_object_near_player(self,player):
-        player_pos = self.get_player()
-        fn = None
-        if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
-            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
             fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
         elif player.orientation == PLAYER_ORIENTATION.WEST:
@@ -53,6 +35,23 @@ class GameMap:
             if fn(position):
                 return self.objects[position]
         return None
+    
+    # needs changing
+    # def get_object_near_player(self,player):
+    #     player_pos = self.get_player()
+    #     fn = None
+    #     if player.orientation == PLAYER_ORIENTATION.NORTH:
+    #         fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
+    #     elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+    #         fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+    #     elif player.orientation == PLAYER_ORIENTATION.EAST:
+    #         fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
+    #     elif player.orientation == PLAYER_ORIENTATION.WEST:
+    #         fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
+    #     for position in self.objects.keys():
+    #         if fn(position):
+    #             return self.objects[position]
+    #     return None
     
     def get_player(self):
         for i in range(len(self.map_matrix)):
@@ -311,6 +310,7 @@ class Player:
                 self.sprite_movement_count = 0
                 self.orientation = PLAYER_ORIENTATION.EAST
         # Check if the new position is valid
+        # print(f'dxdy is : {dx,dy}')       
         if self.game_map.is_movable_position(self.x + dx, self.y + dy):
             prev_loc = (self.x, self.y)
             self.x += dx
@@ -346,8 +346,9 @@ class GameObject:
         self.y = y        # Y-coordinate of the object
         self.interactive = interactive  # Whether the object is interactive
         self.figure = pg.Rect(y * MAP_RATIO, x * MAP_RATIO, MAP_RATIO, MAP_RATIO)
-        self.game_map.add_object(self, self.x, self.y)
         self.sprite_file = None
+        
+        self.game_map.add_object(self, self.x, self.y)
         
     def interact(self, player, screen):
         """Interact with the object. Override this method for interactive objects."""
@@ -386,6 +387,7 @@ if __name__ == "__main__":
                 print(screen.game_map.player_facing_obj(player))
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
+                    print(player.interacting)
                     obj = screen.game_map.get_object_near_player(player)
                     obj.interact(player,screen)
                 else:

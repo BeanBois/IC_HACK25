@@ -6,13 +6,12 @@ from GameEngine.test import InteractiveChatGame
 if __name__ == "__main__":
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
-    obj1 = GameObject("Test Object", screen.game_map)
-    obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    # obj1 = GameObject("Test Object", screen.game_map)
+    # obj2 = GameObject("Test Object", screen.game_map,interactive=True)
     chat_engine = InteractiveChatGame()
     print(chat_engine)
     admin = Admin("admin",screen.game_map, chat_engine)
     screen.set_player(player)
-    
     running = True
     clock = pg.time.Clock()
     
@@ -24,10 +23,14 @@ if __name__ == "__main__":
                 running = False
             if player.moving and event.type == pg.KEYDOWN:
                 print(screen.game_map.player_facing_obj(player))
-                if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
+                obj = screen.game_map.player_facing_obj(player)
+                if event.key == pg.K_x and obj is not None:
                     player.set_interacting()
-                    obj = screen.game_map.get_object_near_player(player)
-                    obj.interact(player,screen)
+                    if obj.name == 'admin':
+                        text = obj.interact(player,screen)
+                        player.set_moving()
+                    else:
+                        obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:
