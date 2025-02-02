@@ -9,14 +9,15 @@ if __name__ == "__main__":
     # obj1 = GameObject("Test Object", screen.game_map)
     # obj2 = GameObject("Test Object", screen.game_map,interactive=True)
     chat_engine = InteractiveChatGame()
-    print(chat_engine)
     admin = Admin("admin",screen.game_map, chat_engine)
     screen.set_player(player)
     running = True
     clock = pg.time.Clock()
-    
+    door = None
     while running:
         pg.event.pump()
+        if door is not None and door.on_it(player):
+            break
         # Check for events (like closing the window)
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -29,12 +30,16 @@ if __name__ == "__main__":
                     if obj.name == 'admin':
                         text = obj.interact(player,screen)
                         player.set_moving()
+                        if obj.check_end() and door is None:
+                            door = Door('door', screen.game_map, walkable=True)
                     else:
                         obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:
                 pass 
+        
+            
         
         screen.fill_screen()
         screen.map_controller.display.flip()

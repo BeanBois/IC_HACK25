@@ -1,13 +1,13 @@
 from GameGraphics.twod_graphics.utilities import *
 from GameEngine.test import InteractiveChatGame
+from GameGraphics.twod_graphics.config import *
 import os 
 import pygame as pg
 import time
+
 class Admin(GameObject):
     def __init__(self, name, game_map: GameMap, engine:InteractiveChatGame, interactive=True):
         super().__init__(name, game_map, interactive)
-        self.x = 9
-        self.y = 8
         self.text_engine = engine
         self.base_sprites_dir = os.getcwd() + '/GameGraphics/twod_graphics/Assets/'
         self.sprite_file = self.base_sprites_dir + 'npc/admin.png'
@@ -142,8 +142,28 @@ class Admin(GameObject):
     def create_object(self,):
         pass
           
-    def init_end(self):
-        if "Congratulation" in self.dialouge:
-            return 
+    def check_end(self):
+        if "Congratulation" in self.dialouge or "Remember, in real emergency" in self.dialouge:
+            return True
             
+    
+
+class Door(GameObject):
+    
+    def __init__(self, name, game_map: GameMap, interactive=True, walkable = True):
+        super().__init__(name, game_map, interactive)
+        self.walkable = walkable
+        self.base_sprites_dir = os.getcwd() + '/GameGraphics/twod_graphics/Assets/'
+        self.sprite_file = self.base_sprites_dir + 'map/door.png'
+        sprite = pg.image.load(self.sprite_file)
+        self.sprite = pg.transform.scale(sprite, (MAP_RATIO, MAP_RATIO))
+    
+    def interact(self, player, screen):
+        pass
+    
+    def on_it(self,player):
+        if player.x == self.x and player.y == self.y:
+            return True
+        return False
+         
         

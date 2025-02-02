@@ -69,7 +69,10 @@ class GameMap:
         return map_matrix
     
     def is_movable_position(self, x,y):
-        return self.map_matrix[x][y] == PATH_CHAR
+        walkable = self.map_matrix[x][y] == PATH_CHAR
+        if (x,y) in self.objects.keys():
+            walkable = walkable or self.objects[(x,y)].walkable
+        return walkable
 
     # returns a set of tuples, which is the location of the elements
     def _find_map(self,element):
@@ -338,7 +341,7 @@ class Player:
         return f"Player at ({self.x}, {self.y}) with inventory: {self.inventory} and resources: {self.resources}"
 
 class GameObject:
-    def __init__(self, name, game_map: GameMap, interactive=False):
+    def __init__(self, name, game_map: GameMap, interactive=False, walkable=False):
         self.game_map = game_map
         x, y = random.choice(list(self.game_map.path_points))
         self.name = name  # Name of the object
@@ -347,7 +350,7 @@ class GameObject:
         self.interactive = interactive  # Whether the object is interactive
         self.figure = pg.Rect(y * MAP_RATIO, x * MAP_RATIO, MAP_RATIO, MAP_RATIO)
         self.sprite_file = None
-        
+        self.walkable = walkable
         self.game_map.add_object(self, self.x, self.y)
         
     def interact(self, player, screen):
@@ -366,6 +369,7 @@ class GameObject:
         return f"{self.name} at ({self.x}, {self.y})"
 
 
+
 if __name__ == "__main__":
     from test_data.test_map import TEST_MAP
     # TEST_MAP = make_maze()
@@ -377,6 +381,7 @@ if __name__ == "__main__":
     running = True
     clock = pg.time.Clock()
     
+    #game loop
     while running:
         pg.event.pump()
         # Check for events (like closing the window)
@@ -400,5 +405,7 @@ if __name__ == "__main__":
         # Update the display
         clock.tick(60)  
 
-    # Quit pg
+    # Quit pg, game ends
     pg.quit()
+    
+    # init data
