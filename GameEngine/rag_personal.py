@@ -2,6 +2,8 @@ import os
 import anthropic
 import getpass
 import time
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+
 
 
 import numpy as np
@@ -30,7 +32,6 @@ config = {
     "password": "demo",
 }
 
-
 # Load embedding model
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -58,17 +59,52 @@ print("Table created successfully.")
 
 # Define personality descriptions
 personality_data = [
+    # Openness
     ("Openness", "People high in Openness enjoy creativity, abstract thinking, and exploring new ideas."),
     ("Openness", "Individuals with high Openness scores embrace novelty and diverse perspectives."),
+    ("Openness", "Open individuals often seek out intellectual challenges and artistic experiences."),
+    ("Openness", "People with high Openness enjoy philosophical discussions and abstract thinking."),
+    ("Openness", "Openness is associated with curiosity, imagination, and appreciation of beauty."),
+    ("Openness", "Those high in Openness are willing to experiment with new ways of thinking and living."),
+    ("Openness", "Open-minded individuals often enjoy literature, music, and innovative technologies."),
+    
+    # Conscientiousness
     ("Conscientiousness", "Conscientious individuals are detail-oriented, highly disciplined, and reliable."),
     ("Conscientiousness", "These individuals excel in structured environments requiring organization."),
+    ("Conscientiousness", "Conscientious people set long-term goals and work diligently to achieve them."),
+    ("Conscientiousness", "People high in Conscientiousness tend to be punctual, careful, and self-disciplined."),
+    ("Conscientiousness", "A strong work ethic and responsibility are key traits of highly conscientious people."),
+    ("Conscientiousness", "Highly conscientious individuals are good at planning and avoiding impulsive actions."),
+    ("Conscientiousness", "Conscientious people follow rules carefully and strive for excellence in their work."),
+
+    # Extraversion
     ("Extraversion", "Extraverts are energized by social interactions and enjoy engaging with people."),
     ("Extraversion", "Extraverts thrive in leadership and social settings."),
+    ("Extraversion", "People high in Extraversion tend to be outgoing, talkative, and sociable."),
+    ("Extraversion", "Extraverted individuals are often enthusiastic and seek excitement."),
+    ("Extraversion", "Those who score high in Extraversion enjoy group activities and team projects."),
+    ("Extraversion", "Extraverts prefer stimulating environments and are comfortable in large gatherings."),
+    ("Extraversion", "Highly extraverted individuals are assertive and often take the initiative in conversations."),
+
+    # Agreeableness
     ("Agreeableness", "Agreeable people are empathetic, cooperative, and focus on maintaining harmony."),
     ("Agreeableness", "Highly agreeable individuals prioritize social bonds and kindness."),
+    ("Agreeableness", "Agreeable people tend to be trusting, generous, and compassionate."),
+    ("Agreeableness", "Individuals high in Agreeableness enjoy helping others and working in teams."),
+    ("Agreeableness", "People with high Agreeableness value relationships and strive to avoid conflicts."),
+    ("Agreeableness", "Agreeable individuals tend to be forgiving and supportive in difficult situations."),
+    ("Agreeableness", "Highly agreeable people are good listeners and show genuine concern for others."),
+
+    # Neuroticism
     ("Neuroticism", "Neurotic individuals experience higher stress and emotional instability."),
     ("Neuroticism", "These individuals are more prone to anxiety and mood swings."),
+    ("Neuroticism", "High Neuroticism is associated with sensitivity to stress and negative emotions."),
+    ("Neuroticism", "People with high Neuroticism may overthink situations and experience frequent worry."),
+    ("Neuroticism", "Those scoring high in Neuroticism often react strongly to criticism or setbacks."),
+    ("Neuroticism", "Neurotic individuals may struggle with self-doubt and feelings of insecurity."),
+    ("Neuroticism", "People with high Neuroticism are more likely to feel overwhelmed by daily challenges."),
 ]
+
 
 # SQL query for insertion
 insert_sql = f"""
@@ -112,8 +148,25 @@ def retrieve_relevant_personality(user_input, top_k=3):
     return top_traits
 
 
-user_response = "I enjoy exploring new cultures and challenging traditional ideas."
-print(retrieve_relevant_personality(user_response))
+# Precomputed trait embeddings for each of the Big Five traits
+trait_embeddings = {
+    "Openness": embedding_model.encode("People high in Openness enjoy creativity, abstract thinking, and exploring new ideas."),
+    "Conscientiousness": embedding_model.encode("Conscientious individuals are detail-oriented, highly disciplined, and reliable."),
+    "Extraversion": embedding_model.encode("Extraverts are energized by social interactions and enjoy engaging with people."),
+    "Agreeableness": embedding_model.encode("Agreeable people are empathetic, cooperative, and focus on maintaining harmony."),
+    "Neuroticism": embedding_model.encode("Neurotic individuals experience higher stress and emotional instability."),
+}
+
+def compute_personality_affinity(user_response):
+    response_embedding = embedding_model.encode([user_response])  # Embed the user's response
+
+    # Calculate cosine similarity between response and personality traits
+    trait_scores = {
+        trait: float(cosine_similarity([response_embedding], [trait_vec])[0][0])
+        for trait, trait_vec in trait_embeddings.items()
+    }
+    
+    return trait_scores
 
 
 def store_user_response(user_id, scenario, response, trait_scores):
@@ -123,3 +176,17 @@ def store_user_response(user_id, scenario, response, trait_scores):
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
     cursor.execute(sql, (user_id, scenario, response, *trait_scores.values()))
+
+
+
+def query_model(model,user_responses):
+    rt = retrieve_relevant_personality(user_responses)
+    score = compute_personality_affinity(user_responses)
+
+    context = [
+            SystemMessage(f"This is the relavent context given the user input to a disaster scenrio {rt} and there 5 scores {score}"),
+            HumanMessage("Give me a summary of the user strenghs and weakness and adivce giving their 5 behaviour traits")]
+
+    response = model.invoke(context).content
+
+    return response
