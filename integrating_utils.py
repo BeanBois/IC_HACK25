@@ -155,8 +155,8 @@ class Fire(pg.sprite.Sprite):
         self.frame_width = self.sprite_sheet.get_width() // 4
         self.frame_height = self.sprite_sheet.get_height()// 2
         self.animation_speed = animation_speed  # Milliseconds per frame
-        temp1 = position[0] * MAP_RATIO
-        temp2 = position[1] * MAP_RATIO
+        temp1 = position[0] * MAP_RATIO + MAP_RATIO // 4 
+        temp2 = position[1] * MAP_RATIO + MAP_RATIO // 4
         
         self.position = (temp1, temp2)
 

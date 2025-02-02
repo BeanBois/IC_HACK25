@@ -33,6 +33,9 @@ class InteractiveChatGame:
         
         # Get AI's response to the initial message
         response = self.model.invoke(self.history)  # Pass the full history to the model
+        self.history.pop()
+        self.history.pop()
+        
         print(f"Android: {response.content}\n")
         self.history.append(AIMessage(content=response.content))  # Add AI response to history
 
@@ -82,7 +85,7 @@ class InteractiveChatGame:
     def get_history(self):
         return self.history
     
-    def analyse_data(self, playe_sheet):
+    def analyse_data(self, player_sheet):
         if len(self.history) % 2 != 0:
             self.history.pop()
             matrix= []
@@ -141,14 +144,17 @@ class InteractiveChatGame:
             response = model2.invoke(context).content
             matrix.append(response)
 
+        print(f'matrix : {matrix}')
         for text in matrix:
-            print(text)
-            pattern = r'\d+\.\s(\d+)'
-        
-            # Find all matches and convert them to integers
+            # print(text)
+            # pattern = r'\d+\.\s(\d+)'
+            pattern = r'\d+'
+    
+        # Find all matches and convert them to integers
             scores = [int(match) for match in re.findall(pattern, text)]
-            if len(scores) != 44:
-                continue
-            playe_sheet.update_player_sheet(scores)
-            playe_sheet.calculate_traits()
-            playe_sheet.plot_personality_type()
+        # if len(scores) != 44:
+            # continue
+            print(f'scores: {scores}')
+            player_sheet.update_player_sheet(scores)
+            player_sheet.calculate_traits()
+            # player_sheet.plot_personality_type()

@@ -6,7 +6,7 @@ from GameEngine.personalityres import *
 import os 
 
 if __name__ == "__main__":
-    
+    sound_file = os.getcwd()+"/GameGraphics/twod_graphics/Assets/sound/fetty_wap.mp3"
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
     player_sheet_file = os.getcwd()+'/csv/BFI_44.csv'
@@ -35,6 +35,7 @@ if __name__ == "__main__":
     while running:
         pg.event.pump()
         if door is not None and door.on_it(player):
+            pg.mixer.music.load(sound_file)
             admin.text_engine.analyse_data(player_sheet)
             popup_font = pg.font.Font(None, 48)  # Use a larger font for the popup
             input_font = pg.font.Font(None, 36)  # Font for the player's input
@@ -45,6 +46,7 @@ if __name__ == "__main__":
             # Create a semi-transparent background for the popup
             popup_background = pg.Surface((popup_rect.width + 40, popup_rect.height + 200), pg.SRCALPHA)
             pg.draw.rect(popup_background, (0, 0, 0, 200), popup_background.get_rect(), border_radius=10)  # Semi-transparent black
+            pg.mixer.music.play()
 
             # Initialize player name input
             player_name = ""
@@ -129,7 +131,6 @@ if __name__ == "__main__":
         clock.tick(60)  
     
     # gen and plot report 
-    admin.text_engine.analyse_data(player_sheet)
     profile = PersonalityReport(player_sheet.personality_result_dict)
     profile.plot_personality_type()
     profile.generate_report()

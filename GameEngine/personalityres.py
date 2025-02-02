@@ -24,20 +24,23 @@ class PlayerSheet:
     def update_player_sheet(self, model_val_array):
         if len(model_val_array) != len(self.player_sheet['Score']):
             raise ValueError(f"Length mismatch: Expected {len(self.player_sheet['Score'])}, but got {len(model_val_array)}")
-
+        print(f'model scores : {model_val_array}')
         self.player_sheet.loc[:, 'Score'] = model_val_array
         self.score = list(self.player_sheet['Score'])
+        print(self.score)
 
     def calculate_traits(self):
         for key in self.personality_result_dict.keys():
             indices = self.player_sheet[self.player_sheet['Trait'] == key].index
             scores = self.player_sheet.loc[indices, 'Score'].tolist()
             reverse_flags = self.player_sheet.loc[indices, 'Reverse?'].tolist()
-
+            print(f'og scores : {scores}')
+            print(f'rev flags : {reverse_flags}')
             adjusted_scores = [
                 6 - score if reverse == "Y" else score
                 for score, reverse in zip(scores, reverse_flags)
             ]
+            print(f'scores: {adjusted_scores}')
 
             self.personality_result_dict[key] = sum(adjusted_scores) / len(adjusted_scores) if adjusted_scores else 0
 
@@ -72,6 +75,7 @@ class PersonalityReport:
         ax.tick_params(axis='x', pad=35)
 
         plt.savefig("personality_chart.png", bbox_inches='tight', pad_inches=0.1)  # Adjusted saving settings
+        
         plt.close()
 
     def generate_report(self):
