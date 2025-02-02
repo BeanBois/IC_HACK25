@@ -1,5 +1,6 @@
 import getpass
 import os
+import re
 import yaml
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
@@ -80,13 +81,12 @@ class InteractiveChatGame:
     def get_history(self):
         return self.history
     
-    def analyse_data(self, history):
-        if len(history) % 2 != 0:
-            history.pop()
+    def analyse_data(self, player):
+        if len(self.history) % 2 != 0:
+            self.history.pop()
             matrix= []
         model2 = ChatAnthropic(model="claude-3-5-sonnet-20240620")
-        for i in range(0, len(history), 2):
-            print('here')
+        for i in range(0, len(self.history), 2):
             context = [
                 SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree."),
                 HumanMessage("""For the given question, answer, and context, judge each of the following parameters with an integer between 0 and 5, where 0 means "disagree" and 5 means "agree." If you don't know or cannot assess a parameter, use 0. Your response must only contain integers separated by spaces, in the order of the parameters listed below
@@ -133,13 +133,21 @@ class InteractiveChatGame:
                             41. answer shows player Gets nervous easily',
                             42. answer shows player Likes to reflect, play with ideas', 
                             43. answer shows player Has few artistic interests',
-                            44. answer shows player Likes to cooperate with others', 
-                            45. answer shows player Is easily distracted',
-                            46. answer shows player Is sophisticated in art, music, or literature' """
-                            + " Question: " + str(history[i].content)
-                            + " Answer: " + str(history[i + 1].content)
+                            44. answer shows player Likes to cooperate with others', """
+                            + " Question: " + str(self.history[i].content)
+                            + " Answer: " + str(self.history[i + 1].content)
                             + " Context: " + str(self.prompt_data.prompt_data['prompt'][self.act_key]['act_context']))]
             response = model2.invoke(context).content
             matrix.append(response)
 
-
+        for text in matrix:
+            print(text)
+            pattern = r'\d+\.\s(\d+)'
+        
+            # Find all matches and convert them to integers
+            scores = [int(match) for match in re.findall(pattern, text)]
+            if len(scores) != 44:
+                continue
+            player.update_player_sheet(scores)
+            player.calculate_traits()
+            player.plot_personality_type()
