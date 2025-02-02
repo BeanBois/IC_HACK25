@@ -21,7 +21,7 @@ if __name__ == "__main__":
     while running:
         pg.event.pump()
         if door is not None and door.on_it(player):
-            admin.text_engine.analyse_data()
+            admin.text_engine.analyse_data(player_sheet)
             popup_font = pg.font.Font(None, 48)  # Use a larger font for the popup
             popup_text = "The game has ended! Tabulating Result..."
             popup_surface = popup_font.render(popup_text, True, (255, 255, 255))  # White text
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
             # Update the display
             screen.map_controller.display.flip()
-            player.calculate_traits()
+            player_sheet.calculate_traits()
             profile = PersonalityReport(player_sheet.personality_result_dict)
             # Wait for a few seconds to show the popup
             pg.time.wait(3000)  
