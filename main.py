@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
                     obj = screen.game_map.get_object_near_player(player)
-                    obj.interact(player)
+                    obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:

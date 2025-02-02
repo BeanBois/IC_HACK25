@@ -16,7 +16,7 @@ class InteractiveChatGame:
         with open("event.yml", "r") as file:
             self.prompt_data = yaml.safe_load(file)
 
-        self.act_key = 1
+        self.act_key = f'act{1}'
 
     def init_ai(self):
         
