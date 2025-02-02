@@ -34,6 +34,37 @@ class InteractiveChatGame:
         self.history.append(AIMessage(content=response.content))  # Add AI response to history
 
         return response.content
+        
+    def extract_objects_from_response(self, response_content):
+        """
+        This method processes the response content and passes it to the Claude model 
+        to extract structured objects.
+        """
+        # Define a clear and structured prompt for Claude
+        prompt = f"""From the following content:
+        
+        {response_content}
+
+        Please extract a list of objects mentioned in the content and provide their relevant details in the form of a dictionary.
+        Each object should include:
+        - 'type': Whether the object is human or non-human.
+        - 'sprite image': A URL or description of the sprite image (if available).
+        - If the object is human, specify their gender (male or female) based on the name (if applicable).
+        
+        Example output (in JSON format):
+        [
+        {{'name': 'ObjectName', 'type': 'human', 'sprite image': 'url_or_description', 'gender': 'male'}},
+        {'name': 'ObjectName', 'type': 'non-human', 'sprite image': 'url_or_description'}
+        ]
+        """
+        
+        context = SystemMessage(content=prompt)
+
+        claude_response = self.claude_model.invoke(context)  # Assuming Claude is set up for extraction
+        
+        extracted_objects = claude_response.content
+
+        return extracted_objects
 
     def get_ai_response(self, input_text):
         self.history.append(HumanMessage(content=input_text))
@@ -105,3 +136,5 @@ class InteractiveChatGame:
                             + " Context: " + str(self.prompt_data.prompt_data['prompt'][self.act_key]['act_context']))]
             response = model2.invoke(context).content
             matrix.append(response)
+
+
