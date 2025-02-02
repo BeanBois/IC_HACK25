@@ -24,27 +24,9 @@ class GameMap:
         player_pos = self.get_player()
         fn = None
         if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
             fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
-        elif player.orientation == PLAYER_ORIENTATION.EAST:
-            fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
-        elif player.orientation == PLAYER_ORIENTATION.WEST:
-            fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
-        for position in self.objects.keys():
-            if fn(position):
-                print(position)
-                return True
-        return False
-    
-    # needs changing
-    def get_object_near_player(self,player):
-        player_pos = self.get_player()
-        fn = None
-        if player.orientation == PLAYER_ORIENTATION.NORTH:
-            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
-            fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+            fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
         elif player.orientation == PLAYER_ORIENTATION.EAST:
             fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
         elif player.orientation == PLAYER_ORIENTATION.WEST:
@@ -53,6 +35,23 @@ class GameMap:
             if fn(position):
                 return self.objects[position]
         return None
+    
+    # needs changing
+    # def get_object_near_player(self,player):
+    #     player_pos = self.get_player()
+    #     fn = None
+    #     if player.orientation == PLAYER_ORIENTATION.NORTH:
+    #         fn = lambda point : point[0] - 1 == player_pos[0] and point[1] == player_pos[1]
+    #     elif player.orientation == PLAYER_ORIENTATION.SOUTH: 
+    #         fn = lambda point : point[0] + 1 == player_pos[0] and point[1] == player_pos[1]
+    #     elif player.orientation == PLAYER_ORIENTATION.EAST:
+    #         fn = lambda point : point[1] - 1 == player_pos[1] and point[0] == player_pos[0]
+    #     elif player.orientation == PLAYER_ORIENTATION.WEST:
+    #         fn = lambda point : point[1] + 1 == player_pos[1] and point[0] == player_pos[0]
+    #     for position in self.objects.keys():
+    #         if fn(position):
+    #             return self.objects[position]
+    #     return None
     
     def get_player(self):
         for i in range(len(self.map_matrix)):
@@ -70,7 +69,10 @@ class GameMap:
         return map_matrix
     
     def is_movable_position(self, x,y):
-        return self.map_matrix[x][y] == PATH_CHAR
+        walkable = self.map_matrix[x][y] == PATH_CHAR
+        if (x,y) in self.objects.keys():
+            walkable = walkable or self.objects[(x,y)].walkable
+        return walkable
 
     # returns a set of tuples, which is the location of the elements
     def _find_map(self,element):
@@ -132,6 +134,8 @@ class GameScreen:
         file_path = os.getcwd()+ '/GameGraphics/twod_graphics/Assets/map/'
         self.path_sprite_file = file_path + 'path.png'
         self.wall_sprite_file = file_path + 'wall.png'
+        self.tutorial = Tutorial(self.screen)
+        
     def set_player(self,player):
         self.player = player
         
@@ -146,6 +150,7 @@ class GameScreen:
             for y in range(len(self.game_map.map_matrix[x])):
                 self._make_element(self.game_map.map_matrix[x][y], y, x)
         self.game_map.draw_map(self.screen)
+        self.tutorial.draw()
         self.map_controller.display.flip()
         # Update the display after drawing all elements
                 
@@ -311,6 +316,7 @@ class Player:
                 self.sprite_movement_count = 0
                 self.orientation = PLAYER_ORIENTATION.EAST
         # Check if the new position is valid
+        # print(f'dxdy is : {dx,dy}')       
         if self.game_map.is_movable_position(self.x + dx, self.y + dy):
             prev_loc = (self.x, self.y)
             self.x += dx
@@ -338,7 +344,7 @@ class Player:
         return f"Player at ({self.x}, {self.y}) with inventory: {self.inventory} and resources: {self.resources}"
 
 class GameObject:
-    def __init__(self, name, game_map: GameMap, interactive=False):
+    def __init__(self, name, game_map: GameMap, interactive=False, walkable=False):
         self.game_map = game_map
         x, y = random.choice(list(self.game_map.path_points))
         self.name = name  # Name of the object
@@ -346,8 +352,9 @@ class GameObject:
         self.y = y        # Y-coordinate of the object
         self.interactive = interactive  # Whether the object is interactive
         self.figure = pg.Rect(y * MAP_RATIO, x * MAP_RATIO, MAP_RATIO, MAP_RATIO)
-        self.game_map.add_object(self, self.x, self.y)
         self.sprite_file = None
+        self.walkable = walkable
+        self.game_map.add_object(self, self.x, self.y)
         
     def interact(self, player, screen):
         """Interact with the object. Override this method for interactive objects."""
@@ -363,7 +370,52 @@ class GameObject:
     def __str__(self):
         """Return a string representation of the object."""
         return f"{self.name} at ({self.x}, {self.y})"
+import pygame as pg
 
+class Tutorial:
+    def __init__(self, screen, position=(100, 0)):
+        """
+        Initialize the Tutorial component.
+        
+        :param screen: The Pygame screen surface where the tutorial will be displayed.
+        :param position: The (x, y) position of the top-left corner of the tutorial box.
+        """
+        self.screen = screen
+        self.position = position
+        self.font = pg.font.Font(None, 24)  # Default font with size 24
+        self.bg_color = (30, 30, 30)  # Dark gray background
+        self.text_color = (255, 255, 255)  # White text
+        self.padding = 10  # Padding around the text
+        self.border_radius = 5  # Rounded corners for the tutorial box
+
+        # Tutorial text
+        self.lines = [
+            "X: Interact with objects",
+            "Arrow Keys: Move",
+            "Enter: Submit open ended input"
+        ]
+
+        # Calculate the size of the tutorial box
+        self.width = max(self.font.size(line)[0] for line in self.lines) + 2 * self.padding
+        self.height = len(self.lines) * self.font.get_height() + 2 * self.padding
+
+    def draw(self):
+        """
+        Draw the tutorial box and text on the screen.
+        """
+        # Create a surface for the tutorial box
+        tutorial_box = pg.Surface((self.width, self.height), pg.SRCALPHA)
+        pg.draw.rect(tutorial_box, self.bg_color, tutorial_box.get_rect(), border_radius=self.border_radius)
+
+        # Render and blit each line of text
+        y_offset = self.padding
+        for line in self.lines:
+            text_surface = self.font.render(line, True, self.text_color)
+            tutorial_box.blit(text_surface, (self.padding, y_offset))
+            y_offset += self.font.get_height()
+
+        # Blit the tutorial box onto the screen
+        self.screen.blit(tutorial_box, self.position)
 
 if __name__ == "__main__":
     from test_data.test_map import TEST_MAP
@@ -376,6 +428,7 @@ if __name__ == "__main__":
     running = True
     clock = pg.time.Clock()
     
+    #game loop
     while running:
         pg.event.pump()
         # Check for events (like closing the window)
@@ -386,6 +439,7 @@ if __name__ == "__main__":
                 print(screen.game_map.player_facing_obj(player))
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
+                    print(player.interacting)
                     obj = screen.game_map.get_object_near_player(player)
                     obj.interact(player,screen)
                 else:
@@ -398,5 +452,7 @@ if __name__ == "__main__":
         # Update the display
         clock.tick(60)  
 
-    # Quit pg
+    # Quit pg, game ends
     pg.quit()
+    
+    # init data

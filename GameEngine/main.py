@@ -6,7 +6,8 @@ import yaml
 import personalityres as personalities 
 import numpy as np
 import re
-
+import serial
+from serial.tools import list_ports
 
 
 def format_questions(questions):
@@ -20,7 +21,7 @@ with open("event.yml", "r") as file:
 
 model = ChatAnthropic(model="claude-3-5-sonnet-20240620")
 
-player = personalities.player_sheet("csv/BFI_44.csv")
+player = personalities.PlayerSheet("csv/BFI_44.csv")
 
 
 
@@ -96,14 +97,23 @@ def analyse_data(history, act_context):
             continue
         player.update_player_sheet(scores)
     player.calculate_traits()
+    returnstr = f"{player_name} "
+    for key, value in player.personality_result_dict.items():
+        returnstr += f"{key[0]}: {round(value)} "
+    ser.write(returnstr.encode("ascii"))
+    input(returnstr)
     player.plot_personality_type()
 
 
 # Get the AI's response
 #map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
 #print(map)
-
+player_name = input("Enter your name: ")
 print("Type 'exit' to end the game.\n\n")
+ports = list_ports.comports()
+for port in ports:
+        if "USB Serial Device" in port.description:  # should be IC badge
+            ser = serial.Serial(port.device, 115200)
 
 # Initialize messages outside the loop to preserve conversation history
 history = []  # Stores the full conversation history
@@ -150,3 +160,4 @@ while i < 1:
     
     # Analyse data after the conversation ends
     analyse_data(history, prompt_data['prompt'][act_key]['act_context'])
+ser.close()

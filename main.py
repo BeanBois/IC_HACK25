@@ -6,32 +6,58 @@ from GameEngine.test import InteractiveChatGame
 if __name__ == "__main__":
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
-    obj1 = GameObject("Test Object", screen.game_map)
-    obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    # obj1 = GameObject("Test Object", screen.game_map)
+    # obj2 = GameObject("Test Object", screen.game_map,interactive=True)
     chat_engine = InteractiveChatGame()
-    print(chat_engine)
     admin = Admin("admin",screen.game_map, chat_engine)
     screen.set_player(player)
-    
     running = True
     clock = pg.time.Clock()
-    
+    door = None
     while running:
         pg.event.pump()
+        if door is not None and door.on_it(player):
+            popup_font = pg.font.Font(None, 48)  # Use a larger font for the popup
+            popup_text = "The game has ended! Tabulating Result..."
+            popup_surface = popup_font.render(popup_text, True, (255, 255, 255))  # White text
+            popup_rect = popup_surface.get_rect(center=(screen.screen_width // 2, screen.screen_height // 2))
+
+            # Create a semi-transparent background for the popup
+            popup_background = pg.Surface((popup_rect.width + 40, popup_rect.height + 40), pg.SRCALPHA)
+            pg.draw.rect(popup_background, (0, 0, 0, 200), popup_background.get_rect(), border_radius=10)  # Semi-transparent black
+
+            # Blit the popup background and text onto the screen
+            screen.screen.blit(popup_background, (popup_rect.x - 20, popup_rect.y - 20))
+            screen.screen.blit(popup_surface, popup_rect)
+
+            # Update the display
+            screen.map_controller.display.flip()
+
+            # Wait for a few seconds to show the popup
+            pg.time.wait(3000)  
+            break
         # Check for events (like closing the window)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
             if player.moving and event.type == pg.KEYDOWN:
                 print(screen.game_map.player_facing_obj(player))
-                if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
+                obj = screen.game_map.player_facing_obj(player)
+                if event.key == pg.K_x and obj is not None:
                     player.set_interacting()
-                    obj = screen.game_map.get_object_near_player(player)
-                    obj.interact(player)
+                    if obj.name == 'admin':
+                        text = obj.interact(player,screen)
+                        player.set_moving()
+                        if obj.check_end() and door is None:
+                            door = Door('door', screen.game_map, walkable=True)
+                    else:
+                        obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:
                 pass 
+        
+            
         
         screen.fill_screen()
         screen.map_controller.display.flip()
