@@ -1,11 +1,16 @@
 from GameGraphics.twod_graphics.utilities import *
 from GameGraphics.twod_graphics.test_data.test_map import TEST_MAP
+from integrating_utils import *
+from GameEngine.test import InteractiveChatGame
 
 if __name__ == "__main__":
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
     obj1 = GameObject("Test Object", screen.game_map)
     obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    chat_engine = InteractiveChatGame()
+    print(chat_engine)
+    admin = Admin("admin",screen.game_map, chat_engine)
     screen.set_player(player)
     
     running = True
@@ -22,7 +27,7 @@ if __name__ == "__main__":
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
                     obj = screen.game_map.get_object_near_player(player)
-                    obj.interact(player)
+                    obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:
