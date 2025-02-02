@@ -141,7 +141,7 @@ class Admin(GameObject):
 
     def create_object(self,):
         pass
-          
+         
     def check_end(self):
         if "Congratulation" in self.dialouge or "Remember, in real emergency" in self.dialouge:
             return True
@@ -166,4 +166,6 @@ class Door(GameObject):
             return True
         return False
          
-        
+   
+# class Pokemon(GameObject):
+#  pass

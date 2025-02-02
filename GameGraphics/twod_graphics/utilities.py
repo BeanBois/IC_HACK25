@@ -134,6 +134,8 @@ class GameScreen:
         file_path = os.getcwd()+ '/GameGraphics/twod_graphics/Assets/map/'
         self.path_sprite_file = file_path + 'path.png'
         self.wall_sprite_file = file_path + 'wall.png'
+        self.tutorial = Tutorial(self.screen)
+        
     def set_player(self,player):
         self.player = player
         
@@ -148,6 +150,7 @@ class GameScreen:
             for y in range(len(self.game_map.map_matrix[x])):
                 self._make_element(self.game_map.map_matrix[x][y], y, x)
         self.game_map.draw_map(self.screen)
+        self.tutorial.draw()
         self.map_controller.display.flip()
         # Update the display after drawing all elements
                 
@@ -367,8 +370,52 @@ class GameObject:
     def __str__(self):
         """Return a string representation of the object."""
         return f"{self.name} at ({self.x}, {self.y})"
+import pygame as pg
 
+class Tutorial:
+    def __init__(self, screen, position=(100, 0)):
+        """
+        Initialize the Tutorial component.
+        
+        :param screen: The Pygame screen surface where the tutorial will be displayed.
+        :param position: The (x, y) position of the top-left corner of the tutorial box.
+        """
+        self.screen = screen
+        self.position = position
+        self.font = pg.font.Font(None, 24)  # Default font with size 24
+        self.bg_color = (30, 30, 30)  # Dark gray background
+        self.text_color = (255, 255, 255)  # White text
+        self.padding = 10  # Padding around the text
+        self.border_radius = 5  # Rounded corners for the tutorial box
 
+        # Tutorial text
+        self.lines = [
+            "X: Interact with objects",
+            "Arrow Keys: Move",
+            "Enter: Submit open ended input"
+        ]
+
+        # Calculate the size of the tutorial box
+        self.width = max(self.font.size(line)[0] for line in self.lines) + 2 * self.padding
+        self.height = len(self.lines) * self.font.get_height() + 2 * self.padding
+
+    def draw(self):
+        """
+        Draw the tutorial box and text on the screen.
+        """
+        # Create a surface for the tutorial box
+        tutorial_box = pg.Surface((self.width, self.height), pg.SRCALPHA)
+        pg.draw.rect(tutorial_box, self.bg_color, tutorial_box.get_rect(), border_radius=self.border_radius)
+
+        # Render and blit each line of text
+        y_offset = self.padding
+        for line in self.lines:
+            text_surface = self.font.render(line, True, self.text_color)
+            tutorial_box.blit(text_surface, (self.padding, y_offset))
+            y_offset += self.font.get_height()
+
+        # Blit the tutorial box onto the screen
+        self.screen.blit(tutorial_box, self.position)
 
 if __name__ == "__main__":
     from test_data.test_map import TEST_MAP
