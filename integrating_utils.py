@@ -146,7 +146,49 @@ class Admin(GameObject):
         if "Congratulation" in self.dialouge or "Remember, in real emergency" in self.dialouge:
             return True
             
-    
+class Fire(pg.sprite.Sprite):
+    def __init__(self, position, animation_speed=100):
+        super().__init__()
+        self.base_sprites_dir = os.getcwd() + '/GameGraphics/twod_graphics/Assets/'
+        self.path = self.base_sprites_dir + '/map/fire.png'
+        self.sprite_sheet = pg.image.load(self.path).convert_alpha()
+        self.frame_width = self.sprite_sheet.get_width() // 4
+        self.frame_height = self.sprite_sheet.get_height()// 2
+        self.animation_speed = animation_speed  # Milliseconds per frame
+        self.position = position
+
+        # Extract frames from the sprite sheet
+        self.frames = self.load_frames()
+
+        # Animation state
+        self.current_frame = 0
+        self.last_update = pg.time.get_ticks()
+
+        # Set the initial image and rect for the sprite
+        self.image = self.frames[self.current_frame]
+        self.rect = self.image.get_rect(topleft=position)
+
+    def load_frames(self):
+        """Extract individual frames from the sprite sheet."""
+        frames = []
+        sheet_width, sheet_height = self.sprite_sheet.get_size()
+        columns, rows = 4, 2  # 4x2 sprite sheet
+        
+        for row in range(rows):
+            for col in range(columns):
+                x = col * self.frame_width
+                y = row * self.frame_height
+                frame = self.sprite_sheet.subsurface(pg.Rect(x, y, self.frame_width, self.frame_height))
+                frames.append(frame)
+        return frames
+
+    def update(self):
+        """Update the current frame based on the animation speed."""
+        now = pg.time.get_ticks()
+        if now - self.last_update > self.animation_speed:
+            self.last_update = now
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
+            self.image = self.frames[self.current_frame]   
 
 class Door(GameObject):
     
