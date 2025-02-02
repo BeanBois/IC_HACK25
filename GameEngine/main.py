@@ -4,6 +4,8 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 import yaml
 import personalityres as personalities 
+import numpy as np
+
 
 
 def format_questions(questions):
@@ -22,12 +24,67 @@ player = personalities.player_sheet("csv/BFI_44.csv")
 
 
 def analyse_data(history, act_context):
+    if len(history) % 2 != 0:
+      history.pop()
+    matrix= []
     model2 = ChatAnthropic(model="claude-3-5-sonnet-20240620")
-    for i in range(0,len(history),2):
+    for i in range(0, len(history), 2):
         context = [
-            SystemMessage("you can answer only with a response  float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree"),
-            HumanMessage("Take this context, qustion, answer, and rate the answer with float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree for the following criteria, if you dont know or dont understand return 0, asnwer must only contain numbers, return 0: " + format_questions(player.questions) + "Question: " + str(history[i])  + " Answer: " + str(history[i+1])  + " Context: " + str(act_context))]
-    print(model2.invoke(context).content)
+            SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree."),
+            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers .
+                        1. answer shows player is Is talkative',
+                        2 answer shows player Tends to find fault with others',
+                        3. answer shows player Does a thorough job', 
+                        4. answer shows player Is depressed', 
+                        5. answer shows player Is original, comes up with new ideas',
+                        6. answer shows player Is reserved', 
+                        7. answer shows player Is helpful and unselfish with others',
+                        8 answer shows player Can be somewhat careless',
+                        9. answer shows player Is relaxed, handles stress well',
+                        10. answer shows player Is curious about many different things', 
+                        11. answer shows player Is full of energy', 
+                        12. answer shows player Starts quarrels with others',
+                        13. answer shows player Is a reliable worker',
+                        14. answer shows player Can be tense', 
+                        15 answer shows player Is ingenious, a deep thinker',
+                        16. answer shows player Generates a lot of enthusiasm',
+                        17. answer shows player Has a forgiving nature',
+                        18. answer shows player Tends to be disorganized', 
+                        19. answer shows player Worries a lot',
+                        20. answer shows player Has an active imagination', 
+                        21. answer shows player Tends to be quiet', 
+                        22. answer shows player Is generally trusting',
+                        23. answer shows player Tends to be lazy',
+                        24. answer shows player Is emotionally stable,
+                        25. answer shows player not easily upset', 
+                        26. answer shows player Is inventive',
+                        27. answer shows player Has an assertive personality',
+                        28. answer shows player Can be cold and aloof',
+                        29. answer shows player Perseveres until the task is finished',
+                        30. answer shows player Can be moody', 
+                        31. answer shows player Values artistic,
+                        32. answer shows player Is a good aesthetic experiences', 
+                        33. answer shows player Is sometimes shy, inhibited', 
+                        34. answer shows player Is considerate and kind to almost everyone',
+                        35. answer shows player Does things efficiently',
+                        36. answer shows player Remains calm in tense situations', 
+                        37. answer shows player Prefers work that is routine', 
+                        38. answer shows player Is outgoing, sociable', 
+                        39. answer shows player Is sometimes rude to others', 
+                        40. answer shows player Makes plans and follows through with them', '
+                        41. answer shows player Gets nervous easily',
+                        42. answer shows player Likes to reflect, play with ideas', 
+                        43. answer shows player Has few artistic interests',
+                        44. answer shows player Likes to cooperate with others', 
+                        45. answer shows player Is easily distracted',
+                        46. answer shows player Is sophisticated in art, music, or literature' """
+                        + " Question: " + str(history[i])
+                        + " Answer: " + str(history[i + 1])
+                        + " Context: " + str(act_context))
+        ]
+        response = model2.invoke(context).content
+        
+    print(response)
 
 # Get the AI's response
 #map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
