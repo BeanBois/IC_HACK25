@@ -30,12 +30,24 @@ class player_sheet():
     def calculate_traits(self):
         for key, vals in self.personality_result_dict.items():
             indices = self.player_sheet[self.player_sheet['Trait'] == key].index
-            scores = self.player_sheet.loc[indices, 'Score'].tolist()
 
-            if len(scores) > 0:
-                self.personality_result_dict[key] = sum(scores) / len(scores)
+            scores = self.player_sheet.loc[indices, 'Score'].tolist()
+            reverse_flags = self.player_sheet.loc[indices, 'Reverse?'].tolist()
+
+            adjusted_scores = []
+
+            # Calculate scores based on 'Reverse' flag
+            for score, reverse in zip(scores, reverse_flags):
+                if reverse == "Y":
+                    adjusted_scores.append(6 - score)
+                else:
+                    adjusted_scores.append(score)
+
+            if len(adjusted_scores) > 0:
+                self.personality_result_dict[key] = sum(adjusted_scores) / len(adjusted_scores)
             else:
                 self.personality_result_dict[key] = 0
+
 
     def plot_personality_type(self):
         labels = list(self.personality_result_dict.keys())
@@ -57,14 +69,14 @@ class player_sheet():
         plt.show()
 
 
-### tests
-# p1 = player_sheet('csv/BFI_44.csv')
-# print(p1.questions)
-# model_val_array = [random.randint(1, 5) for _ in range(44)]
-# print(model_val_array)
-# print(p1.update_player_sheet(model_val_array))
-# print(p1.score)
-# p1.calculate_traits()
-# print(p1.personality_result_dict)
-# p1.plot_personality_type()
-# # print(p1.check_for_missing_values())
+## tests
+p1 = player_sheet('csv/BFI_44.csv')
+print(p1.questions)
+model_val_array = [random.randint(1, 5) for _ in range(44)]
+print(model_val_array)
+print(p1.update_player_sheet(model_val_array))
+print(p1.score)
+p1.calculate_traits()
+print(p1.personality_result_dict)
+p1.plot_personality_type()
+# print(p1.check_for_missing_values())
