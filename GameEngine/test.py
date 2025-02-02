@@ -147,14 +147,27 @@ class InteractiveChatGame:
         print(f'matrix : {matrix}')
         for text in matrix:
             # print(text)
-            # pattern = r'\d+\.\s(\d+)'
+            #pattern = r'\d+\.\s(\d+)'
             pattern = r'\d+'
     
         # Find all matches and convert them to integers
             scores = [int(match) for match in re.findall(pattern, text)]
-        # if len(scores) != 44:
-            # continue
+        if len(scores) == 44:
             print(f'scores: {scores}')
             player_sheet.update_player_sheet(scores)
             player_sheet.calculate_traits()
             # player_sheet.plot_personality_type()
+        elif len(scores) > 44:
+            scores = scores[0:44]
+            print(f'scores: {scores}')
+            player_sheet.update_player_sheet(scores)
+            player_sheet.calculate_traits()
+            # player_sheet.plot_personality_type()
+        else:
+            scores = scores + (44-len(scores)) * [0]
+            print(f'scores: {scores}')
+            player_sheet.update_player_sheet(scores)
+            player_sheet.calculate_traits()
+            # player_sheet.plot_personality_type()
+
+        
