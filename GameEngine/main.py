@@ -32,7 +32,7 @@ def analyse_data(history, act_context):
         print('here')
         context = [
             SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree."),
-            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers, if you dont know put 0dj .
+            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers, if you font know or cannot asses, let it be 0 .
                         1. answer shows player is Is talkative',
                         2 answer shows player Tends to find fault with others',
                         3. answer shows player Does a thorough job', 
