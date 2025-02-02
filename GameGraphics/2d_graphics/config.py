@@ -20,6 +20,6 @@ PLAYER_CHAR = 'x'
 from enum import Enum
 class PLAYER_ORIENTATION(Enum):
     NORTH = 0
-    EAST = 1
-    SOUTH = 2
+    SOUTH = 1
+    EAST = 2
     WEST = 3

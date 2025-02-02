@@ -5,6 +5,7 @@ from make_maze import make_maze
 from config import *
 import pygame as pg # type: ignore
 import math
+import os
 
 round_down = lambda x : math.floor(x)
 class Game:
@@ -127,6 +128,10 @@ class GameScreen:
         self.map_controller = pg
         self.game_map = GameMap(map_string)
         self._make_screen()
+        self.player = None
+    
+    def set_player(self,player):
+        self.player = player
         
     def add_element(self, element, x, y):
         self._make_element(element, x, y)
@@ -174,7 +179,14 @@ class GameScreen:
 
     def _make_player(self,x,y):
         player = self.map_controller.Rect(x * MAP_RATIO, y * MAP_RATIO, MAP_RATIO, MAP_RATIO)
-        self.map_controller.draw.rect(self.screen, PLAYER_COLOUR, player)
+        sprite = self.player.get_curr_sprite()
+        scaled_sprite = self.map_controller.transform.scale(sprite, (player.width, player.height))
+        # Draw the scaled sprite onto the screen at the player rectangle's position
+        self.screen.blit(scaled_sprite, player.topleft)
+    
+        # Optional: Draw the rectangle outline for debugging (remove if not needed)
+        self.map_controller.draw.rect(self.screen, PLAYER_COLOUR, player, 1)  
+        # self.map_controller.draw.rect(self.screen, PLAYER_COLOUR, player)
         
 # unimplemented
 class CameraComponent:
@@ -206,7 +218,7 @@ class CameraComponent:
 # holder class that initiates the player
 # responsible for keeping track of details of the player
 class Player:
-    def __init__(self, game_map:GameMap):
+    def __init__(self, game_map:GameMap, gender='male'):
         self.game_map = game_map
         x, y = random.choice(list(self.game_map.path_points))
         self.game_map.update_map(PLAYER_CHAR, x, y)
@@ -217,11 +229,34 @@ class Player:
             'health': 100,  # Example resource: health
             'energy': 50    # Example resource: energy
         }
+
         self.orientation = PLAYER_ORIENTATION.NORTH
         
         self.moving = True
         self.interacting = False
-    
+        
+        # sprite stuff
+        self.gender = gender
+        self.sprite_movement_count = 0
+        self._make_sprites()
+                
+    def _make_sprites(self):
+        file_path = os.getcwd()+ '/GameGraphics/2d_graphics/Assets/player/'
+        sprite_file = file_path + 'boy.png' if self.gender == 'male' else 'girl.png'
+        full_sprite = pg.image.load(sprite_file)
+        self.sprites = []
+        full_sprite_width = full_sprite.get_width()
+        sprite_width = full_sprite_width//12
+        sprite_height = full_sprite.get_height()
+        for i in range(12):  # Assuming there are 12 sprites
+            # Create a subsurface for each sprite
+            sprite = full_sprite.subsurface((i * sprite_width, 0, sprite_width, sprite_height))
+            self.sprites.append(sprite)
+       
+    def get_curr_sprite(self):
+        idx = self.sprite_movement_count + 3 * self.orientation.value
+        return self.sprites[idx]
+        
     def get_map_coords(self):
         return round_down(self.x), round_down(self.y)
     
@@ -238,15 +273,31 @@ class Player:
         dx = 0
         dy = 0
         if event_key == pg.K_UP:
+            if self.orientation == PLAYER_ORIENTATION.NORTH:
+                self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+            else:
+                self.sprite_movement_count = 0
             self.orientation = PLAYER_ORIENTATION.NORTH
             dx -=1
         elif event_key == pg.K_DOWN:
+            if self.orientation == PLAYER_ORIENTATION.SOUTH:
+                self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+            else:
+                self.sprite_movement_count = 0
             self.orientation = PLAYER_ORIENTATION.SOUTH
             dx +=1
         elif event_key == pg.K_LEFT:
+            if self.orientation == PLAYER_ORIENTATION.WEST:
+                self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+            else:
+                self.sprite_movement_count = 0
             self.orientation = PLAYER_ORIENTATION.WEST
             dy -=1
         elif event_key == pg.K_RIGHT:
+            if self.orientation == PLAYER_ORIENTATION.EAST:
+                self.sprite_movement_count = (1 + self.sprite_movement_count) % 3
+            else:
+                self.sprite_movement_count = 0
             self.orientation = PLAYER_ORIENTATION.EAST
             dy +=1
         # Check if the new position is valid
@@ -310,7 +361,7 @@ if __name__ == "__main__":
     player =  Player(screen.game_map)
     obj1 = GameObject("Test Object", screen.game_map)
     obj2 = GameObject("Test Object", screen.game_map,interactive=True)
-    
+    screen.set_player(player)
     running = True
     clock = pg.time.Clock()
     
