@@ -140,7 +140,8 @@ class Admin(GameObject):
     
 
     def create_object(self,):
-                         
+        pass
+          
     def init_end(self):
         if "Congratulation" in self.dialouge:
             return 
