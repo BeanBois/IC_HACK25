@@ -99,8 +99,6 @@ if __name__ == "__main__":
             # Update the display
             screen.map_controller.display.flip()
             player_sheet.calculate_traits()
-
-            
             # ports = list_ports.comports()
             # for port in ports:
             #     if "USB Serial Device" in port.description:
@@ -110,7 +108,6 @@ if __name__ == "__main__":
             #     returnstr += f"{key[0]:{round(value)}}"
             # ser.write(returnstr.encode("ascii"))
             # ser.close()
-
             profile = PersonalityReport(player_sheet.personality_result_dict)
             # Wait for a few seconds to show the popup
             pg.time.wait(3000)  
