@@ -5,7 +5,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 
 class InteractiveChatGame:
-    def _init_(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
+    def __init__(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
         # Ensure API key is set
         if not os.environ.get("ANTHROPIC_API_KEY"):
             os.environ["ANTHROPIC_API_KEY"] = getpass.getpass("Enter API key for Anthropic: ")
@@ -21,7 +21,7 @@ class InteractiveChatGame:
     def init_ai(self):
         
         # Add system message for context
-        context = SystemMessage(content=str({**self.prompt_data['prompt']['global'], **self.prompt_data['prompt'][act_key]}))
+        context = SystemMessage(content=str({**self.prompt_data['prompt']['global'], **self.prompt_data['prompt'][self.act_key]}))
         self.history.append(context)  # Add system message to history
         
         # Add initial human message

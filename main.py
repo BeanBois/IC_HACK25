@@ -1,11 +1,16 @@
 from GameGraphics.twod_graphics.utilities import *
 from GameGraphics.twod_graphics.test_data.test_map import TEST_MAP
+from integrating_utils import *
+from GameEngine.test import InteractiveChatGame
 
 if __name__ == "__main__":
     screen = GameScreen(TEST_MAP,pg)
     player =  Player(screen.game_map)
     obj1 = GameObject("Test Object", screen.game_map)
     obj2 = GameObject("Test Object", screen.game_map,interactive=True)
+    chat_engine = InteractiveChatGame()
+    print(chat_engine)
+    admin = Admin("admin",screen.game_map, chat_engine)
     screen.set_player(player)
     
     running = True

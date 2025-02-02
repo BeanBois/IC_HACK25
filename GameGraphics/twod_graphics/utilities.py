@@ -167,8 +167,13 @@ class GameScreen:
         
     def _make_object(self,x,y):
         obj = self.game_map.objects[(y,x)]
-        color = INTERACTIVE_OBJECT_COLOUR if obj.interactive else PASSIVE_OBJECT_COLOUR
-        self.map_controller.draw.rect(self.screen, color, obj.figure)
+        if obj.sprite_file is not None:
+            sprite = obj.sprite
+            scaled_sprite = self.map_controller.transform.scale(sprite, (obj.figure.width, obj.figure.height))
+            self.screen.blit(scaled_sprite, obj.figure.topleft)
+        else:
+            color = INTERACTIVE_OBJECT_COLOUR if obj.interactive else PASSIVE_OBJECT_COLOUR
+            self.map_controller.draw.rect(self.screen, color, obj.figure)
         
     # function creates a map from a map in matrix form
     def _make_wall(self, x, y):
@@ -342,8 +347,9 @@ class GameObject:
         self.interactive = interactive  # Whether the object is interactive
         self.figure = pg.Rect(y * MAP_RATIO, x * MAP_RATIO, MAP_RATIO, MAP_RATIO)
         self.game_map.add_object(self, self.x, self.y)
+        self.sprite_file = None
         
-    def interact(self, player):
+    def interact(self, player, screen):
         """Interact with the object. Override this method for interactive objects."""
         if self.interactive:
             print(f"You interact with the {self.name}.")
@@ -381,7 +387,7 @@ if __name__ == "__main__":
                 if event.key == pg.K_x and screen.game_map.player_facing_obj(player):
                     player.set_interacting()
                     obj = screen.game_map.get_object_near_player(player)
-                    obj.interact(player)
+                    obj.interact(player,screen)
                 else:
                     player.move(event.key)
             if player.interacting:
