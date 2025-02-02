@@ -3,6 +3,11 @@ import os
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 import yaml
+import personalityres as personalities 
+
+
+def format_questions(questions):
+    return "\n".join([f"{i+1}. {question}" for i, question in enumerate(questions)])
 
 if not os.environ.get("ANTHROPIC_API_KEY"):
   os.environ["ANTHROPIC_API_KEY"] = getpass.getpass("Enter API key for Anthropic: ")
@@ -12,17 +17,16 @@ with open("event.yml", "r") as file:
 
 model = ChatAnthropic(model="claude-3-5-sonnet-20240620")
 
+player = personalities.player_sheet("csv/BFI_44.csv")
+
+
+
 def analyse_data(history, act_context):
     model2 = ChatAnthropic(model="claude-3-5-sonnet-20240620")
-    for i in range(len(history)):
+    for i in range(0,len(history),2):
         context = [
             SystemMessage("you can answer only with a response  float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree"),
-            HumanMessage("""Take this context, qustion, answer, and rate the answer with float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree" for the following criteria, if you dont know or dont understand return 0, asnwer must only contain numbers, return 0:'
-                         1.player Is talkative
-                         2.Tends to find fault with others
-                         3.Does a thorough job
-                         4. Is depressed, blue
-                         5.Is original, comes up with new ideas""""Is original, comes up with new ideas " + "Question: " + str(history[i])  + " Answer: " + str(history[i+1])  + " Context: " + str(act_context))]
+            HumanMessage("Take this context, qustion, answer, and rate the answer with float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree disagree for the following criteria, if you dont know or dont understand return 0, asnwer must only contain numbers, return 0: " + format_questions(player.questions) + "Question: " + str(history[i])  + " Answer: " + str(history[i+1])  + " Context: " + str(act_context))]
     print(model2.invoke(context).content)
 
 # Get the AI's response

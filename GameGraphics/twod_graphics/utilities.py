@@ -184,9 +184,6 @@ class GameScreen:
         # Draw the scaled sprite onto the screen at the player rectangle's position
         self.screen.blit(scaled_sprite, player.topleft)
     
-        # Optional: Draw the rectangle outline for debugging (remove if not needed)
-        self.map_controller.draw.rect(self.screen, PLAYER_COLOUR, player, 1)  
-        # self.map_controller.draw.rect(self.screen, PLAYER_COLOUR, player)
         
 # unimplemented
 class CameraComponent:
@@ -241,7 +238,7 @@ class Player:
         self._make_sprites()
                 
     def _make_sprites(self):
-        file_path = os.getcwd()+ '/GameGraphics/2d_graphics/Assets/player/'
+        file_path = os.getcwd()+ '/GameGraphics/twod_graphics/Assets/player/'
         sprite_file = file_path + 'boy.png' if self.gender == 'male' else 'girl.png'
         full_sprite = pg.image.load(sprite_file)
         self.sprites = []
