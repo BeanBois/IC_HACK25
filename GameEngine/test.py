@@ -47,21 +47,14 @@ class InteractiveChatGame:
         {response_content}
 
         Please extract a list of objects mentioned in the content and provide their relevant details in the form of a dictionary.
-<<<<<<< HEAD
         ignore the player and make sure the objects are objects in a building
         Each object should include:
         - 'type': Whether the object is human or non-human.
         - 'sprite image': A URL or png the sprite image.
-=======
-        Each object should include:
-        - 'type': Whether the object is human or non-human.
-        - 'sprite image': A URL or description of the sprite image (if available).
->>>>>>> e5bad1c80a1ab96b01d9425c0b0509a1b1cdd16f
         - If the object is human, specify their gender (male or female) based on the name (if applicable).
         
         Example output (in JSON format):
         [
-<<<<<<< HEAD
         """ \
         + \
         """
@@ -73,16 +66,6 @@ class InteractiveChatGame:
         # context = SystemMessage(content=prompt)
 
         claude_response = self.claude_model.invoke(prompt)  # Assuming Claude is set up for extraction
-=======
-        {{'name': 'ObjectName', 'type': 'human', 'sprite image': 'url_or_description', 'gender': 'male'}},
-        {'name': 'ObjectName', 'type': 'non-human', 'sprite image': 'url_or_description'}
-        ]
-        """
-        
-        context = SystemMessage(content=prompt)
-
-        claude_response = self.claude_model.invoke(context)  # Assuming Claude is set up for extraction
->>>>>>> e5bad1c80a1ab96b01d9425c0b0509a1b1cdd16f
         
         extracted_objects = claude_response.content
 
