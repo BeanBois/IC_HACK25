@@ -12,6 +12,7 @@ class InteractiveChatGame:
         
         # Initialize messages outside the loop to preserve conversation history
         self.model = ChatAnthropic(model=model_version)
+        self.claude_model = ChatAnthropic(model=model_version)
         self.history = []  # Stores the full conversation history
         with open(event_file, "r") as file:
             self.prompt_data = yaml.safe_load(file)
@@ -46,21 +47,25 @@ class InteractiveChatGame:
         {response_content}
 
         Please extract a list of objects mentioned in the content and provide their relevant details in the form of a dictionary.
+        ignore the player and make sure the objects are objects in a building
         Each object should include:
         - 'type': Whether the object is human or non-human.
-        - 'sprite image': A URL or description of the sprite image (if available).
+        - 'sprite image': A URL or png the sprite image.
         - If the object is human, specify their gender (male or female) based on the name (if applicable).
         
         Example output (in JSON format):
         [
-        {{'name': 'ObjectName', 'type': 'human', 'sprite image': 'url_or_description', 'gender': 'male'}},
-        {'name': 'ObjectName', 'type': 'non-human', 'sprite image': 'url_or_description'}
-        ]
+        """ \
+        + \
         """
+        {'name': 'ObjectName', 'type': 'human', 'sprite image': 'url_or_png_of_sprite', 'gender': 'male'},
+        {'name': 'ObjectName', 'type': 'non-human', 'sprite image': 'url_or_png_of_sprite'}
+        ]
+        """    
         
-        context = SystemMessage(content=prompt)
+        # context = SystemMessage(content=prompt)
 
-        claude_response = self.claude_model.invoke(context)  # Assuming Claude is set up for extraction
+        claude_response = self.claude_model.invoke(prompt)  # Assuming Claude is set up for extraction
         
         extracted_objects = claude_response.content
 
