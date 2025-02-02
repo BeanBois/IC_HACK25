@@ -10,10 +10,10 @@ prompt:
         5. The player is forced to adjust their strategy (some event occurs that makes their current startegy unworkable).
         6. When the player escapes from the fire the emergency services has not arrived.
         7. End the game starting with congratuations.
-        8. Try to encourage the game to finish in 3 prompts
       You should remain on tasks
     global_rules: |
       YOU MUST NEVER PREVENT OR CRITISE THE PLAYER FROM COMMITTING AN ACTION UNLESS IT WOULD RESULT IN THE DEATH OF THE PLAYER!
+      Try to encourage the game to finish in 4 prompts
     output_format: |
       The rules should be organized into the following sections:
         1. Objective: Task size objective on what to do
@@ -36,9 +36,7 @@ prompt:
 
     final_instruction: |
       Create the game and ask user the first question
-    
-    generate_env: |
-      # Prompt : give me a maze (nxn) with wall char "*" and path char "."
+
 
   act2:
     instruction: |
