@@ -5,6 +5,7 @@ from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 import yaml
 import personalityres as personalities 
 import numpy as np
+import re
 
 
 
@@ -31,8 +32,8 @@ def analyse_data(history, act_context):
     for i in range(0, len(history), 2):
         print('here')
         context = [
-            SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree."),
-            HumanMessage("""For the given question, answer, and context, judge each of the following parameters with an integer between 0 and 5, where 0 means "disagree" and 5 means "agree." If you don't know or cannot assess a parameter, use 0. Your response must only contain integers separated by spaces, in the order of the parameters listed below
+            SystemMessage("You can answer only with a response float between 5 and 0, where 5 is you fully agree and 0 is you fully disagree. Please answer using the full range"),
+            HumanMessage("""For the question, asnwer and context, jusge the for each paramethers with a float beetween  0 and 5, where 0 is disagree and 5 is agree, you can answe can only contain integers, if you font know or cannot asses, let it be 0 .
                         1. answer shows player is Is talkative',
                         2 answer shows player Tends to find fault with others',
                         3. answer shows player Does a thorough job', 
@@ -76,9 +77,7 @@ def analyse_data(history, act_context):
                         41. answer shows player Gets nervous easily',
                         42. answer shows player Likes to reflect, play with ideas', 
                         43. answer shows player Has few artistic interests',
-                        44. answer shows player Likes to cooperate with others', 
-                        45. answer shows player Is easily distracted',
-                        46. answer shows player Is sophisticated in art, music, or literature' """
+                        44. answer shows player Likes to cooperate with others', """
                         + " Question: " + str(history[i].content)
                         + " Answer: " + str(history[i + 1].content)
                         + " Context: " + str(act_context))]
@@ -86,6 +85,19 @@ def analyse_data(history, act_context):
         response = model2.invoke(context).content
         matrix.append(response)
     print(matrix)
+
+    for text in matrix:
+        print(text)
+        pattern = r'\d+\.\s(\d+)'
+    
+        # Find all matches and convert them to integers
+        scores = [int(match) for match in re.findall(pattern, text)]
+        if len(scores) != 44:
+            continue
+        player.update_player_sheet(scores)
+    player.calculate_traits()
+    player.plot_personality_type()
+
 
 # Get the AI's response
 #map = model.invoke([HumanMessage(content="make me ive me a maze (nxn) with wall char '*' and path char '.'")])
