@@ -9,8 +9,8 @@ from serial.tools import list_ports
 class InteractiveChatGame:
     def __init__(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
         # Ensure API key is set
-        if not os.environ.get("ANTHROPIC_API_KEY"):
-            os.environ["ANTHROPIC_API_KEY"] = getpass.getpass("Enter API key for Anthropic: ")
+        
+        os.environ["ANTHROPIC_API_KEY"] = ""
         
         # Initialize messages outside the loop to preserve conversation history
         self.model = ChatAnthropic(model=model_version)
@@ -82,7 +82,7 @@ class InteractiveChatGame:
     def get_history(self):
         return self.history
     
-    def analyse_data(self, player, player_name):
+    def analyse_data(self, playe_sheet):
         if len(self.history) % 2 != 0:
             self.history.pop()
             matrix= []
@@ -137,7 +137,7 @@ class InteractiveChatGame:
                             44. answer shows player Likes to cooperate with others', """
                             + " Question: " + str(self.history[i].content)
                             + " Answer: " + str(self.history[i + 1].content)
-                            + " Context: " + str(self.prompt_data.prompt_data['prompt'][self.act_key]['act_context']))]
+                            + " Context: " + str(self.prompt_data['prompt'][self.act_key]['act_context']))]
             response = model2.invoke(context).content
             matrix.append(response)
 
@@ -149,15 +149,6 @@ class InteractiveChatGame:
             scores = [int(match) for match in re.findall(pattern, text)]
             if len(scores) != 44:
                 continue
-            player.update_player_sheet(scores)
-        player.calculate_traits()
-        ports = list_ports.comports()
-        for port in ports:
-            if "USB Serial Device" in port.description:
-                ser = serial.Serial(port.device, 115200)
-        returnstr = f"{player_name}"
-        
-        ser.write(returnstr.encode("ascii"))
-        ser.close()
-        player.plot_personality_type()
-        
+            playe_sheet.update_player_sheet(scores)
+            playe_sheet.calculate_traits()
+            playe_sheet.plot_personality_type()
