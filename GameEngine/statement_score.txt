@@ -1,0 +1,70 @@
+"Use the stairs and remain alert for alternative escape routes if stairwells become blocked",5,0,0,0,0
+"Pull the fire alarm and use your phone to call emergency services as backup",4,0,0,0,0
+"Exit through the nearest emergency door and look for secondary exits while moving",5,0,0,0,0
+"Check for smoke under doors with your hand and listen for fire sounds to locate safe passages",4,0,0,0,0
+"Help others evacuate and ask if anyone needs assistance with emergency procedures",3,0,0,0,0
+"Cover your mouth with a wet cloth and use clothing or nearby materials if water isn't available",4,0,0,0,0
+"Move quickly but scan for safer routes rather than following crowds blindly",5,0,0,0,0
+"Start evacuation immediately and adjust your route if you encounter smoke or flames",4,0,0,0,0
+"Wave bright objects at windows and create noise to signal rescuers if trapped",4,0,0,0,0
+"Take the main exit and scan for emergency windows and fire escapes while moving",5,0,0,0,0
+"Always use the main entrance as the only exit during a fire - it's the way I came in",1,0,0,0,0
+"Follow the crowd without questioning where they're going - they must know best",1,0,0,0,0
+"Only use the elevator since it's faster than taking the stairs",1,0,0,0,0
+"Wait in place for emergency services - moving is too risky",2,0,0,0,0
+"Use only the building's fire alarm system to alert others - no need for anything else",2,0,0,0,0
+"Stay by the window and wait to be rescued - that's what they tell you to do",2,0,0,0,0
+"Keep moving forward on your chosen path regardless of smoke conditions",1,0,0,0,0
+"Stick to the original evacuation plan exactly as written with no modifications",2,0,0,0,0
+"Only call 911 - don't waste time with building alarms or alerting others",2,0,0,0,0
+"Return to your desk to gather important items before evacuating",1,0,0,0,0
+"Use the stairs and remain alert for alternative escape routes if stairwells become blocked",5,0,0,0,0
+"Pull the fire alarm and use your phone to call emergency services as backup",4,0,0,0,0
+"Exit through the nearest emergency door and look for secondary exits while moving",5,0,0,0,0
+"Keep moving forward on your chosen path regardless of smoke conditions",1,0,0,0,0
+"Assess wind direction through windows to predict fire spread and plan accordingly",5,0,0,0,0
+"Only use the building's fire alarm system to alert others - no need for anything else",2,0,0,0,0
+"Coordinate with others to share knowledge of safe routes while maintaining individual judgment",5,0,0,0,0
+"Test doors for heat and check ceiling conditions before entering new areas",4,0,0,0,0
+"Stay in your office with the door closed since you know the layout there",2,0,0,0,0
+"Identify multiple gathering points outside based on wind and fire location",5,0,0,0,0
+"Only follow instructions from your direct supervisor during evacuation",2,0,0,0,0
+"Use furniture and available materials to create alternative barriers against smoke",4,0,0,0,0
+"Refuse to deviate from the posted evacuation route under any circumstances",1,0,0,0,0
+"Monitor both smoke patterns and other evacuees' movements to make informed decisions",5,0,0,0,0
+"Wait for official announcements before taking any action",1,0,0,0,0
+"Combine crawling and walking based on smoke levels at different heights",4,0,0,0,0
+"Only trust the emergency lights to guide you - ignore other potential indicators",2,0,0,0,0
+"Create improvised smoke filters while continuing to seek clearer air paths",4,0,0,0,0
+"Stick to memorized evacuation procedures without considering current conditions",1,0,0,0,0
+"Use reflective surfaces and sounds to gauge fire location and spread",4,0,0,0,0
+"Assume the first sign of smoke means the only option is staying in place",1,0,0,0,0
+"Adapt communication methods based on noise levels and visibility conditions",5,0,0,0,0
+"Rely exclusively on emergency personnel for evacuation guidance",2,0,0,0,0
+"Consider weather conditions and building materials when choosing exit paths",5,0,0,0,0
+"Follow others blindly since they must know where they're going",1,0,0,0,0
+"Document and share discovered safe passages with others while maintaining movement",4,0,0,0,0
+"Ignore building safety features that aren't specifically for fires",2,0,0,0,0
+"Evaluate multiple assembly points based on wind direction and building access",5,0,0,0,0
+"Use only designated fire exits even if they're crowded or smoke-filled",2,0,0,0,0
+"Combine different types of emergency signals to maximize rescue chances",4,0,0,0,0
+"Stay with your original group regardless of changing conditions",1,0,0,0,0
+"Balance speed and safety while constantly reassessing route options",5,0,0,0,0
+"Reject help from anyone who isn't wearing an official uniform",1,0,0,0,0
+"Create temporary safe zones while planning next movement phases",4,0,0,0,0
+"Use only one communication method to avoid confusion",2,0,0,0,0
+"Adapt evacuation speed based on group capabilities and conditions",4,0,0,0,0
+"Insist on using familiar routes even when blocked",1,0,0,0,0
+"Coordinate with others while maintaining independent decision-making ability",5,0,0,0,0
+"Rely solely on building power systems for lighting and guidance",2,0,0,0,0
+"Consider building layout and materials when choosing breaking points",4,0,0,0,0
+"Wait for detailed instructions before attempting any movement",1,0,0,0,0
+"Use environmental cues to validate or adjust evacuation decisions",5,0,0,0,0
+"Follow predetermined roles without adapting to the situation",2,0,0,0,0
+"Combine official evacuation routes with situational alternatives",4,0,0,0,0
+"Trust only written emergency procedures, ignoring current conditions",1,0,0,0,0
+"Create backup plans while executing primary evacuation strategy",5,0,0,0,0
+"Use only official emergency equipment, ignoring available alternatives",2,0,0,0,0
+"Adapt standard procedures to accommodate mobility-impaired evacuees",4,0,0,0,0
+"Maintain rigid formation during evacuation regardless of obstacles",1,0,0,0,0
+"Share and integrate multiple information sources for better decisions",5,0,0,0,0
