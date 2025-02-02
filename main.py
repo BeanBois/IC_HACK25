@@ -24,7 +24,7 @@ if __name__ == "__main__":
     while running:
         pg.event.pump()
         if door is not None and door.on_it(player):
-            # Define popup properties
+            admin.text_engine.analyse_data(player_sheet)
             popup_font = pg.font.Font(None, 48)  # Use a larger font for the popup
             input_font = pg.font.Font(None, 36)  # Font for the player's input
             popup_text = "The game has ended! Please enter your name:"
@@ -82,11 +82,10 @@ if __name__ == "__main__":
 
             # Update the display
             screen.map_controller.display.flip()
-
-            # Wait for a few seconds to show the final message
-            pg.time.wait(5000)  # Wait for 5 seconds
-
-            # Break out of the loop
+            player_sheet.calculate_traits()
+            profile = PersonalityReport(player_sheet.personality_result_dict)
+            # Wait for a few seconds to show the popup
+            pg.time.wait(3000)  
             break
         # Check for events (like closing the window)
         for event in pg.event.get():
