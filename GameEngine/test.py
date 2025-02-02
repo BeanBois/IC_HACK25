@@ -4,7 +4,8 @@ import re
 import yaml
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-
+import serial
+from serial.tools import list_ports
 class InteractiveChatGame:
     def __init__(self, event_file="event.yml", player_csv="csv/BFI_44.csv", act_num=1, model_version="claude-3-5-sonnet-20240620"):
         # Ensure API key is set

@@ -370,7 +370,6 @@ class GameObject:
     def __str__(self):
         """Return a string representation of the object."""
         return f"{self.name} at ({self.x}, {self.y})"
-import pygame as pg
 
 class Tutorial:
     def __init__(self, screen, position=(100, 0)):
