@@ -100,11 +100,7 @@ if __name__ == "__main__":
             screen.map_controller.display.flip()
             player_sheet.calculate_traits()
 
-            returnstr = "player_name"
-            for key, value in player_sheet.personality_result_dict.items():
-                returnstr += f"{key[0]:{round(value)}}"
-
-            connect_and_send(returnstr)
+            
             # ports = list_ports.comports()
             # for port in ports:
             #     if "USB Serial Device" in port.description:
@@ -118,6 +114,10 @@ if __name__ == "__main__":
             profile = PersonalityReport(player_sheet.personality_result_dict)
             # Wait for a few seconds to show the popup
             pg.time.wait(3000)  
+            returnstr = f"{player_name}"
+            for key, value in player_sheet.personality_result_dict.items():
+                returnstr += f"{key[0]}:{round(value)}"
+            connect_and_send(returnstr)
             break
         # Check for events (like closing the window)
         for event in pg.event.get():
