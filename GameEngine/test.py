@@ -13,13 +13,14 @@ class InteractiveChatGame:
         # Initialize messages outside the loop to preserve conversation history
         self.model = ChatAnthropic(model=model_version)
         self.history = []  # Stores the full conversation history
-        with open("event.yml", "r") as file:
+        with open(event_file, "r") as file:
             self.prompt_data = yaml.safe_load(file)
 
-        self.act_key = f'act{1}'
+        self.act_key = f"act{1}"
+
+        print("Game initialized")
 
     def init_ai(self):
-        
         # Add system message for context
         context = SystemMessage(content=str({**self.prompt_data['prompt']['global'], **self.prompt_data['prompt'][self.act_key]}))
         self.history.append(context)  # Add system message to history
@@ -34,14 +35,14 @@ class InteractiveChatGame:
 
         return response.content
 
-    def get_ai_response(self, input):
-        self.history.append(HumanMessage(content=input))
+    def get_ai_response(self, input_text):
+        self.history.append(HumanMessage(content=input_text))
         response = self.model.invoke(self.history)
         self.history.append(AIMessage(content=response.content))
         return response
     
-    def get_history(self, history):
-        return history
+    def get_history(self):
+        return self.history
     
     def analyse_data(self, history):
         if len(history) % 2 != 0:
@@ -102,7 +103,5 @@ class InteractiveChatGame:
                             + " Question: " + str(history[i].content)
                             + " Answer: " + str(history[i + 1].content)
                             + " Context: " + str(self.prompt_data.prompt_data['prompt'][self.act_key]['act_context']))]
-            print('there')
             response = model2.invoke(context).content
             matrix.append(response)
-        print(matrix)
